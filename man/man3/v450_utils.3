@@ -1,0 +1,960 @@
+\" -*- nroff -*-
+
+\" v450_utils -- V450 library interface
+\"
+\" This program is free software; you can redistribute it and/or modify
+\" it under the terms of the GNU General Public License as published by
+\" the Free Software Foundation; either version 2 of the License, or (at
+\" your option) any later version.
+\"
+\" This program is distributed in the hope that it will be useful, but
+\" WITHOUT ANY WARRANTY; without even the implied warranty of
+\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+\" General Public License for more details.
+\"
+\" You should have received a copy of the GNU General Public License
+\" along with this program. If not, see <http://www.gnu.org/licenses/>.
+\"
+\" Author: Dean W. Anneser
+\" Company: RTLinux Solutions LLC for Highland Technology, Inc.
+\" Date: 30 Apr 2021
+
+.TH v450_utils 3 "user level utility library for VME V450 card"
+
+.SH NAME
+.nf
+\f4v450_utils\f1 -- collection of routines to interface with the VME V450 16 channel A/D card.
+.fi
+
+.SH SYNOPSIS
+.nf
+\f4#include \f2"v450_utils_proto.h"\f1
+\f4#include \f2"v450_regs_sdef.h"\f1
+.br
+.sp
+
+.SS READ/WRITE REGISTERS
+\f4unsigned short v450_read_vximfr(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_vxitype(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_serial(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_romid(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_romrev(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_dfilt(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_cflags(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_rflags(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_afilt(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_relays(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_write_relays(V450_REGS *\f2pb,\f4 unsigned short \f2relays\f4)\f1
+.br
+\f4unsigned short v450_read_uled(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_write_uled(V450_REGS *\f2pb\f4, unsigned short \f2uled\f4)\f1
+.br
+\f4unsigned short v450_read_mode(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_write_mode(V450_REGS *\f2pb\f4, unsigned short \f2mode\f4)\f1
+.br
+\f4unsigned short v450_read_calid(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_biss(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_ycal(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_dcal(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_bistdac(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_write_bistdac(V450_REGS *\f2pb\f4, unsigned short \f2range_code\f4)\f1
+.br
+\f4unsigned short v450_read_bistblk(V450_REGS *\f2pb\f4, int \f2blknum\f4, unsigned short *\f2bistblk\f4)\f1
+.br
+\f4unsigned short v450_read_biststage(V450_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v450_read_bistnumerrors(V450_REGS *\f2pb\f4)\f1
+.br
+\f4char *v450_get_cal_date(V450_REGS *\f2pb\f4)\f1
+.br
+\f4int v450_read_reg(V450_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned short *\f2reg_value\f4)\f1
+.br
+\f4int v450_read_interlock_reg(V450_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned int *\f2reg_value\f4)\f1
+.br
+
+.SS MACRO EXECUTION
+\f4int v450_execute_macro(V450_REGS *\f2pb\f4, unsigned short \f2macro\f4, unsigned short \f2param0\f4, unsigned short *\f2arg\f4)\f1
+
+.SS CONFIGURATION
+\f4int v450_config_rtd_type(V450_REGS *\f2pb\f4, char \f2rtd_id\f4, int \f2type\f4)\f1
+.br
+\f4int v450_config_analog_chnl(V450_REGS *\f2pb\f4, unsigned int \f2chnl_num\f4, unsigned int \f2rf_code\f4, unsigned int \f2rn_code\f4, unsigned int \f2ocd_flag\f4)\f1
+.br
+\f4int v450_config_tc_chnl(V450_REGS *\f2pb\f4, unsigned int \f2chnl_num\f4, unsigned int \f2rf_code\f4, unsigned int \f2rs_code\f4, unsigned int \f2rn_code\f4, unsigned int \f2ocd_flag\f4, unsigned int \f2dft_flag\f4, unsigned int \f2loop_resistance_enable_flag\f4)\f1
+.br
+
+.SS READ/WRITE OPERATIONS
+\f4int v450_read_rtd_type(V450_REGS *\f2pb\f4, char \f2rtd_id\f4, int *\f2ptype\f4)\f1
+.br
+\f4int v450_read_rtd_temp(V450_REGS *\f2pb\f4, char \f2rtd_id\f4, char \f2deg_spec\f4, float \f2*ptemp\f4)\f1
+.br
+\f4int v450_read_rtd_ohms(V450_REGS *\f2pb\f4, char \f2rtd_id\f4, float *\f2pohms\f4)\f1
+.br
+\f4int v450_write_fake_rtd_temp(V450_REGS *\f2pb\f4, char \f2rtd_id\f4, char \f2deg_spec\f4, float \f2temp\f4)\f1
+.br
+\f4int v450_read_loop_resistance(V450_REGS *\f2pb\f4, int \f2chnl_num\f4, float *\f2pohms_data\f4)\f1
+.br
+\f4int v450_read_analog_chnl(V450_REGS *\f2pb\f4, int \f2chnl_num\f4, float *\f2pvolts_data\f4, int *\f2pcounts\f4)\f1
+.br
+\f4int v450_read_tc_chnl(V450_REGS *\f2pb\f4, int \f2chnl_num\f4, char \f2deg_spec\f4, float *\f2ptemp\f4)\f1
+.br
+\f4int v450_chnl_to_rn_code(V450_REGS *\f2pb\f4, int \f2chnl\f4, unsigned short *\f2prn_code\f4)\f1
+.br
+\f4int v450_rn_code_to_range(int \f2rn_code\f4, float *\f2pmin\f4, float *\f2pmax\f4)\f1
+.br
+.fi
+
+.SH DESCRIPTION
+The \f4v450_util\f1 library provides an easy method for a user to addess functions of the Highland Technology V450 analog to
+digital converter board.  The first argument \f2pb\f1 of these routines is a virtual address pointer to the base address of the
+board.  This can be attained through the use of the \f4v120_config(1)\f1 and \f4get_vaddr_for_device(3)\f1 interface, or through
+\f4v120_open(3)\f1, \f4v120_add_vme_region(3)\f1, and \f4v120_allocate_vme(3)\f1. 
+
+.TP
+\f4#include \f2"v450_utils_proto.h"\f1
+.br
+defines the prototypes for all of these calls.
+.TP
+\f4#include \f2"v450_regs_sdef.h"\f1
+.br
+defines all the register #define constants, and the register map of the board.
+
+
+.SS \f4unsigned short v450_read_vximfr(V450_REGS *\f2pb\f4)\f1
+Returns the value of the VXIMFR register.  Highland Technology's registered code is 0xfeee.
+
+.SS \f4unsigned short v450_read_vxitype(V450_REGS *\f2pb\f4)\f1
+Returns the value of the VXITYPE register.  These are defined in \f2vme_search_specs_stor.h\f1.
+
+.nf
+.in +5
+v210 -- VME Relay Module                                              0x56c2
+v220 -- VME 4-20mA Analog Control I/O Module                          0x56cc
+v230 -- VME Analog Input Module                                       0x56d6
+v250 -- VME Digital I/O Module                                        0x56ea
+v340 -- VME Waveform Generator Module                                 0x5744
+v344 -- VME Waveform Generator                                        0x5648
+v346 -- VME Waveform Generator                                        0x564a
+v350 -- VME Analog/Digital Function Generator                         0x574e
+v360 -- VME Tachometer Module                                         0x5758
+v365 -- VME Tachometer / Overspeed Module                             0x575d
+v370 -- VME Waveform Generator                                        0x5762
+v375 -- VME Waveform Generator                                        0x5767
+v380 -- VME Strain Gauge / Weighing Module                            0x576c
+v385 -- VME Strain Gauge / Load Cell Module                           0x5771
+v410 -- VME RTD / Resistance Input Module                             0x578a
+v420 -- VME Isolated Resistance Simulator                             0x5794
+v450 -- VME Analog Input Module                                       0x57b2
+v460 -- VME Analog Scanner Module                                     0x57bc
+v470 -- VME Analog Output and Thermocouple Simulator Module           0x57c6
+v490 -- VME Multi-range Digitizer                                     0x57da
+v545 -- VME Synchro/Resolver/LVDT/RVDT Simulation/Acquisition Module  0x5811
+.in -5
+.fi
+
+.SS \f4unsigned short v450_read_serial(V450_REGS *\f2pb\f4)\f1
+Returns the value of the SERIAL register.
+
+.SS \f4unsigned short v450_read_romid(V450_REGS *\f2pb\f4)\f1
+Returns the value of the ROMID register.
+
+.SS \f4unsigned short v450_read_romrev(V450_REGS *\f2pb\f4)\f1
+Returns the value of the ROMREV register.
+
+.SS \f4unsigned short v450_read_dfilt(V450_REGS *\f2pb\f4)\f1
+Returns the value of the DFILT register.
+
+.SS \f4unsigned short v450_read_cflags(V450_REGS *\f2pb\f4)\f1
+Returns the value of the CFLAGS register.
+
+.SS \f4unsigned short v450_read_rflags(V450_REGS *\f2pb\f4)\f1
+Returns the value of the RFLAGS register.
+
+.SS \f4unsigned short v450_read_relays(V450_REGS *\f2pb\f4)\f1
+Returns the value of the RELAYS register.
+
+.SS \f4unsigned short v450_write_relays(V450_REGS *\f2pb,\f4 unsigned short \f2relays\f4)\f1
+Writes the RELAYS register -- controls calibration bus relays.
+
+.SS \f4unsigned short v450_read_uled(V450_REGS *\f2pb\f4)\f1
+Returns the value of the ULED register.
+
+.SS \f4unsigned short v450_write_uled(V450_REGS *\f2pb\f4, unsigned short \f2uled\f4)\f1
+Writes the ULED register -- user LED control.
+
+.SS \f4unsigned short v450_read_mode(V450_REGS *\f2pb\f4)\f1
+Returns the value of the MODE register.
+
+.SS \f4unsigned short v450_write_mode(V450_REGS *\f2pb\f4, unsigned short \f2mode\f4)\f1
+Writes the MODE register -- used to connect D9 connector for calibration.
+
+.SS \f4unsigned short v450_read_calid(V450_REGS *\f2pb\f4)\f1
+Returns the value of the CALID register.
+
+.SS \f4unsigned short v450_read_biss(V450_REGS *\f2pb\f4)\f1
+Returns the value of the BISS register.
+
+.SS \f4unsigned short v450_read_ycal(V450_REGS *\f2pb\f4)\f1
+Returns the value of the YCAL register -- calibration date -- year.
+
+.SS \f4unsigned short v450_read_dcal(V450_REGS *\f2pb\f4)\f1
+Returns the value of the DCAL register -- calibration date -- MM/DD.
+
+.SS \f4unsigned short v450_read_bistdac(V450_REGS *\f2pb\f4)\f1
+Returns the value of the BISTDAC register -- loopback DAC setting.
+
+.SS \f4unsigned short v450_write_bistdac(V450_REGS *\f2pb\f4, unsigned short \f2range_code\f4)\f1
+Writes the BISTDAC register --loopback DAC setting.
+
+.SS \f4unsigned short v450_read_bistblk(V450_REGS *\f2pb\f4, int \f2blknum\f4, unsigned short *\f2bistblk\f4)\f1
+Returns a error block after running BIST.  A BIST block contains:
+
+.nf
+.in +5
+0  Error summary work
+1  null
+2  MS word of "expected" value
+3  LS word of "expected" value
+4  MS word of "actual" value
+5  LS word of "actual" value
+.in -5
+.fi
+
+Example:
+
+.nf
+.in +5
+unsigned short errorblk[6];
+
+v450_read_bistblk(pb, blknum, errorblk);
+.in -5
+.fi
+
+.SS \f4unsigned short v450_read_biststage(V450_REGS *\f2pb\f4)\f1
+Returns the current executing stage of the built in test.
+
+.SS \f4unsigned short v450_read_bistnumerrors(V450_REGS *\f2pb\f4)\f1
+Returns the current number of errors encountered while running a built in test.
+
+.SS \f4char *v450_get_cal_date(V450_REGS *\f2pb\f4)\f1
+Returns a string for month/day/year.  For example, May 31, 2021 is: "05/31/2021".
+
+.SS \f4int v450_execute_macro(V450_REGS *\f2pb\f4, unsigned short \f2macro\f4, unsigned short \f2param0\f4, unsigned short *\f2arg\f4)\f1
+.br
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2macro\f1
+.br
+supports the following macros as defined in the manual and \f2v450_regs_sdef.h\f1.
+
+.nf
+.in +5
+#define V450_MACRO_NOOP                 0x0000
+#define V450_MACRO_SETALL_TYPE_J        0x8401  // set all channels to Type J thermocouple at 16.7 Hz, using the onboard reference junction
+#define V450_MACRO_SETALL_TYPE_K        0x8402  // set all channels to Type K thermocouple at 16.7 Hz, using the onboard reference junction
+#define V450_MACRO_SETALL_TYPE_E        0x8403  // set all channels to Type E thermocouple at 16.7 Hz, using the onboard reference junction
+#define V450_MACRO_SETALL_TYPE_T        0x8404  // set all channels to Type T thermocouple at 16.7 Hz, using the onboard reference junction
+#define V450_MACRO_SETALL_12_5_V        0x8405  // set all channels to +/- 12.5V at 16.7 Hz
+#define V450_MACRO_SETALL_80_MV         0x8406  // set all channels to +/- 80V at 16.7 Hz
+#define V450_MACRO_SETALL_25_MV         0x8407  // set all channels to +/- 25V at 16.7 Hz
+#define V450_MACRO_SET_DFILT            0x8408  // set digital filtering
+#define V450_MACRO_GET_DFILT            0x8409  // get digital filtering setup
+#define V450_MACRO_GET_AFILT            0x840b  // get analog filtering types
+#define V450_MACRO_SYNC                 0x840c  // sync all channels -- PARAM0 bitmask specifies channels to sync
+#define V450_MACRO_MEA_TC_LOOP_RES      0x8418  // measure thermocouple loop resistance -- PARAM0 bitmask specifies channels to measure
+#define V450_MACRO_HARD_REBOOT          0x8420  // hard reboot -- reloads PFGSs, restarts code, disappears from bus for 4 seconds
+#define V450_MACRO_SOFT_REBOOT          0x8421  // soft reboot -- remains on bus
+
+// macros supported in V450-2
+
+#define V450_MACRO_FULL_TEST            0x8410  // full test sequence -- tests all channels, as well as RTD anc temperature sensor subsystems
+#define V450_MACRO_SINGLE_CHNL_TEST     0x8411  // single channel test sequence -- number 0-15 in PARAM0
+#define V450_MACRO_MULT_CHNL_TEST       0x8412  // multiple channel test sequence --bitmask in PARAM0
+.in -5
+.fi
+
+.TP
+\f2param0\f1
+.br
+used as a value or bitmask in the following macros:
+.nf
+.in +5
+V450_MACRO_GET_AFILT
+V450_MACRO_SYNC
+V450_MACRO_MEA_TC_LOOP_RES
+V450_MACRO_SINGLE_CHNL_TEST
+V450_MACRO_MULT_CHNL_TEST
+.in -5
+.fi
+
+.TP
+\f2arg\f1
+.br
+usually a pointer to an array of unsigned short, to copy to or from the V450 board, with the following macros:
+.nf
+.in +5
+V450_MACRO_SET_DFILT
+V450_MACRO_GET_DFILT
+V450_MACRO_GET_AFILT
+.in -5
+.fi
+
+
+For the V450_MACRO_SET_DFILT macro, \f2args\f1 is an array of 16 containing one of the values below:
+
+.nf
+.in +5
+#define V450_DF_NONE                    0       // digital filter disabled
+#define V450_DF_1_HZ_BW                 1       // 1 Hz 16-pole Butterworth
+#define V450_DF_2_HZ_BW                 2       // 2 Hz 16-pole Butterworth
+#define V450_DF_5_HZ_BW                 3       // 5 Hz 16-pole Butterworth
+#define V450_DF_10_HZ_BW                4       // 10 Hz 16-pole Butterworth
+#define V450_DF_20_HZ_BW                5       // 20 Hz 16-pole Butterworth
+#define V450_DF_50_HZ_BW                6       // 50 Hz 16-pole Butterworth
+#define V450_DF_100_HZ_BW               7       // 100 Hz 16-pole Butterworth
+#define V450_DF_1_HZ_BS                 11      // 1 Hz 16-pole Bessel
+#define V450_DF_2_HZ_BS                 12      // 2 Hz 16-pole Bessel
+#define V450_DF_5_HZ_BS                 13      // 5 Hz 16-pole Bessel
+#define V450_DF_10_HZ_BS                14      // 10 Hz 16-pole Bessel
+#define V450_DF_20_HZ_BS                15      // 20 Hz 16-pole Bessel
+#define V450_DF_50_HZ_BS                16      // 50 Hz 16-pole Bessel
+#define V450_DF_100_HZ_BS               17      // 100 Hz 16-pole Bessel
+.in -5
+.fi
+
+Example:
+
+Set channel 0 to V450_DF_NONE, channel 1 to V450_DF_10_HZ_BW, and channel 2 to V450_DF_100_HZ_BW.
+
+.nf
+.in +5
+int i;
+unsigned short digital_filter[16];
+
+for (i = 0; i < 16; i++)
+  digital_filter[i] = V450_DF_NONE;
+
+digital_filter[1] = V450_DF_10_HZ_BW;
+digital_filter[2] = V450_DF_100_HZ_BW;
+
+if (v450_execute_macro(pb, V450_MACRO_SET_DFILT, 0, digital_filter) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+.SS \f4int v450_config_rtd_type(V450_REGS *\f2pb\f4, char \f2rtd_id\f4, int \f2type\f4)\f1
+.br
+configures the RTD type for 'a', 'b', 'c', or 'd'.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board
+.TP
+\f2rtd_id\f1
+.br
+specifies RTD, may be 'a', 'b', 'c', or 'd'.
+.TP
+\f2type\f1
+.br
+specifies RTD type as defined in \f2v450_regs_sdef.h\f1
+
+.nf
+.in +5
+#define V450_RTD_TYPE_UNUSED            0
+#define V450_RTD_TYPE_100_OHM_PT        1       // 100 ohm platinum
+#define V450_RTD_TYPE_1000_OHM_PT       2       // 1000 ohm platinum
+.in -5
+.fi
+
+Example:
+
+Configure RTD 'a' to 100 ohm Platinum.
+
+.nf
+.in +5
+if (v450_config_rtd_type(pb, 'a', V450_RTE_TYPE_100_OHM_PT) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+
+.SS \f4int v450_read_rtd_type(V450_REGS *\f2pb\f4, char \f2rtd_id\f4, int *\f2ptype\f4)\f1
+.br
+reads the RTD type for 'a', 'b', 'c', or 'd'.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2rtd_id\f1
+.br
+specifies RTD, may be 'a', 'b', 'c', or 'd'.
+.TP
+\f2ptype\f1
+.br
+pointer to user defined integer parameter to hold the type of the specified RTD (as defined in \f2v450_regs_sdef.h\f1).
+
+Example:
+
+Read the specified RTD type of thermocouple 'c'.
+
+.nf
+.in +5
+int type;	// RTD type, 0=unused, 1=100ohmPT, 2=1000ohmPT
+
+if (v450_read_rtd_type(pb, 'c', &type) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+
+.SS \f4int v450_read_rtd_temp(V450_REGS *\f2pb\f4, char \f2rtd_id\f4, char \f2deg_spec\f4, float \f2*ptemp\f4)\f1
+.br
+reads the temperature in (C/F/K/R) for the RTD's 'a', 'b', 'c', 'd', 'r' (internal), or '1' (fake #1 RTD), or '2' (fake #2 RTD);
+and load into a user defined floating point parameter,  pointed to by \f2*ptemp\f1. 
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board
+.TP
+\f2rtd_id\f1
+.br
+specifies RTD, may be 'a', 'b', 'c', or 'd', 'r', '1', or '2'.
+.TP
+\f2deg_spec\f1
+.br
+specifies temperature format: 'C' Celsius, 'F' Fahrenheit, 'K' Kelvin, or 'R' Rankin.
+.TP
+\f2ptemp\f1
+.br
+pointer to user defined floating point parameter to hold the temperature of the specified RTD.
+
+Example:
+
+Read the temperature in degF for internal RTD.
+
+.nf
+.in +5
+float temp;	// temperature in degF
+
+if (v450_read_rtd_temp(pb, 'r', 'F', &temp) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+
+.SS \f4int v450_read_rtd_ohms(V450_REGS *\f2pb\f4, char \f2rtd_id\f4, float *\f2pohms\f4)\f1
+.br
+read RTD resistance 'a', 'b', 'c', 'd', or 't' (test resistor).  Ohms value is returned to a user defined floating point number,
+pointed to by \f2pohms\f1. 
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2rtd_id\f1
+.br
+specified RTD as 'a', 'b', 'c', 'd', or 't' for test resistor.
+.TP
+\f2pohms\f1
+.br
+pointer to user defined floating piont parameter to hold the ohms value of specified RTD or test resistor
+
+Example:
+
+Read the ohms value of RTD 'c'.
+
+.nf
+.in +5
+float ohms;
+
+if (v450_read_rtd_ohms(pb, 'c', &ohms) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+
+.SS \f4int v450_write_fake_rtd_temp(V450_REGS *\f2pb\f4, char \f2rtd_id\f4, char \f2deg_spec\f4, float \f2temp\f4)\f1
+.br
+write temperature in C/F/K/R into rake RTD's '1' or '2'.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2rtd_id\f1
+.br
+fake RTD specified as '1' or '2'.
+.TP
+\f2deg_spec\f1
+.br
+specifies temperature format: 'C' Celsius, 'F' Fahrenheit, 'K' Kelvin, or 'R' Rankin.
+.TP
+\f2temp\f1
+.br
+specifies temperature.
+
+Example:
+
+Write 70 degF into fake RTD '2'.
+
+.nf
+.in +5
+if (v450_write_fake_rtd_temp(pb, '2', 'F', 70.0) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+
+.SS \f4int v450_read_reg(V450_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned short *\f2reg_value\f4)\f1
+.br
+read the value of any V450 register.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2offset\f1
+.br
+offset in BYTES from base address of board (not REG#).
+.TP
+\f2reg_value\f1
+.br
+pointer to user specified unsigned short value to receive register contents.  All the offsets are specified in the register map
+in the V450 manual. 
+
+Example:
+
+Read the value of the CFLAGS register (offset 0x10).
+
+.nf
+.in +5
+unsigned short reg_value;
+
+if (v450_read_reg(pb, 0x10, &reg_value) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+
+.SS \f4int v450_read_interlock_reg(V450_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned int *\f2reg_value\f4)\f1
+.br
+read interlocked MS:LS (where LS is MS+2) into 32-bit unsigned int.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2offset\f1
+.br
+offset in BYTES from base address of board (not REG#) of MS part of word.
+.TP
+\f2reg_value\f1
+.br
+pointer to user specified unsigned int value to receive register contents.  All the offsets are specified in the register map in
+the V450 manual. 
+
+Example:
+
+Read the value of the test resistor register MS:0x54, LS:0x56.
+
+.nf
+.in +5
+unsigned int reg_value;
+
+if (v450_read_interlock_reg(pb, 0x54, &reg_value) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+.SS \f4int v450_config_analog_chnl(V450_REGS *\f2pb\f4, unsigned int \f2chnl_num\f4, unsigned int \f2rf_code\f4, unsigned int \f2rn_code\f4, unsigned int \f2ocd_flag\f4)\f1
+.br
+configure an analog channel.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2chnl_num\f1
+.br
+channel number 0-15.
+.TP
+\f2rf_code\f1
+.br
+RF codes are listed in the manual and in \f2v450_regs_sdef.h\f1.
+
+.nf
+.in +5
+#define V450_RF_CODE_16_7_SPS           0       // 16.7 samples per second
+#define V450_RF_CODE_4_17_SPS           1       // 4.17 samples per second
+#define V450_RF_CODE_8_33_SPS           2       // 8.33 samples per second
+#define V450_RF_CODE_33_3_SPS           3       // 33.3 samples per second
+#define V450_RF_CODE_62_5_SPS           4       // 62.5 samples per second
+#define V450_RF_CODE_125_SPS            5       // 125 samples per second
+#define V450_RF_CODE_250_SPS            6       // 250 samples per second
+#define V450_RF_CODE_500_SPS            7       // 500 samples per second
+.in -5
+.fi
+
+.TP
+\f2rn_code\f1
+.br
+RN codes are listed in the manual and in \f2v450_regs_sdef.h\f1.
+
+.nf
+.in +5
+#define V450_RN_CODE_OFF                0
+#define V450_RN_CODE_25_MV              1       // +/-25mv
+#define V450_RN_CODE_50_MV              2       // +/-50mv
+#define V450_RN_CODE_80_MV              3       // +/-80mv
+#define V450_RN_CODE_125_MV             4       // +/-125mv
+#define V450_RN_CODE_250_MV             5       // +/-250mv
+#define V450_RN_CODE_500_MV             6       // +/-500mv
+#define V450_RN_CODE_1_25_V             7       // +/-1.25v
+#define V450_RN_CODE_2_5_V              8       // +/-2.5v
+#define V450_RN_CODE_5_V                9       // +/-5.0v
+#define V450_RN_CODE_12_5_V             10      // +/-12.5v
+#define V450_RN_CODE_25_V               11      // +/-25.0v
+#define V450_RN_CODE_50_V               12      // +/-50.0v
+#define V450_RN_CODE_125_V              13      // +/-125.0v
+#define V450_RN_CODE_250_V              14      // +/-250.0v
+.in -5
+.fi
+
+.TP
+\f2ocd_flag\f1
+.br
+open circuit detection -- thermocouples or voltages <= 500mv.
+
+OCD codes are listed in the manual in in \f2v450_regs_sdef.h\f1.
+
+.nf
+.in +5
+#define V450_OCD_OFF                    0
+#define V450_OCD_ON                     1       // enables open circuit detection -- for T/C's or voltages <= 500 mv
+.in -5
+.fi
+
+Example:
+
+Configure channel 5 for internal acquisition rate of 16.7 samples/second at a +/-12.5v range with no open circuit detection.
+
+.nf
+.in +5
+unsigned int reg_value;
+
+if (v450_config_analog_chnl(pb, 5, V450_RF_CODE_16_7_SPS, V450_RN_CODE_12_5_V, V450_OCD_OFF) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+
+.SS \f4int v450_config_tc_chnl(V450_REGS *\f2pb\f4, unsigned int \f2chnl_num\f4, unsigned int \f2rf_code\f4, unsigned int \f2rs_code\f4, unsigned int \f2rn_code\f4, unsigned int \f2ocd_flag\f4, unsigned int \f2dft_code\f4, unsigned int \f2loop_resistance_enable_flag\f4)\f1
+.br
+configure a thermocouple channel.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2chnl_num\f1
+.br
+channel number 0-15.
+.TP
+\f2rf_code\f1
+.br
+RF codes are listed in the manual and in \f2v450_regs_sdef.h\f1 and above.
+.TP
+\f2rs_code\f1
+.br
+RS codes are listed in the manual and in \f2v450_regs_sdef.h\f1.
+
+.nf
+.in +5
+#define V450_RS_CODE_RTD_A              0
+#define V450_RS_CODE_RTD_B              1
+#define V450_RS_CODE_RTD_C              2
+#define V450_RS_CODE_RTD_D              3
+#define V450_RS_CODE_RTD_I              4       // internal
+#define V450_RS_CODE_RTD_F1             5       // fake 1
+#define V450_RS_CODE_RTD_F2             6       // fake 2
+#define V450_RS_CODE_RTD_NONE           7       // ice point equivalent
+.in -5
+.fi
+
+.TP
+\f2rn_code\f1
+.br
+RN codes are listed in the manual and in \f2v450_regs_sdef.h\f1.
+
+.nf
+.in +5
+#define V450_RN_CODE_OFF                0
+
+#define V450_RN_CODE_TYPE_J             16      // -210 to 1200 degC
+#define V450_RN_CODE_TYPE_K             17      // -270 to 1372 degC
+#define V450_RN_CODE_TYPE_E             18      // -270 to 1000 degC
+#define V450_RN_CODE_TYPE_T             19      // -270 to 400 degC
+#define V450_RN_CODE_TYPE_R             20      // -50 to 1768 degC
+#define V450_RN_CODE_TYPE_S             21      // -50 to 1768 degC
+#define V450_RN_CODE_TYPE_B             22      // 0 to 1820 degC
+#define V450_RN_CODE_TYPE_N             23      // -270 to 1300 degC
+.in -5
+.fi
+
+.TP
+\f2ocd_flag\f1
+.br
+open circuit detection.  OCD codes are listed in the manual in in \f2v450_regs_sdef.h\f1 and above.
+.TP
+\f2dft_code\f1
+.br
+digital filter code.  Sets the selected digital filter for this channel.  Digital filter codes are listed in the manual and in
+\f2v450_regs_sdef.h\f1. 
+
+.nf
+.in +5
+#define V450_DF_NONE                    0       // digital filter disabled
+#define V450_DF_1_HZ_BW                 1       // 1 Hz 16-pole Butterworth
+#define V450_DF_2_HZ_BW                 2       // 2 Hz 16-pole Butterworth
+#define V450_DF_5_HZ_BW                 3       // 5 Hz 16-pole Butterworth
+#define V450_DF_10_HZ_BW                4       // 10 Hz 16-pole Butterworth
+#define V450_DF_20_HZ_BW                5       // 20 Hz 16-pole Butterworth
+#define V450_DF_50_HZ_BW                6       // 50 Hz 16-pole Butterworth
+#define V450_DF_100_HZ_BW               7       // 100 Hz 16-pole Butterworth
+#define V450_DF_1_HZ_BS                 11      // 1 Hz 16-pole Bessel
+#define V450_DF_2_HZ_BS                 12      // 2 Hz 16-pole Bessel
+#define V450_DF_5_HZ_BS                 13      // 5 Hz 16-pole Bessel
+#define V450_DF_10_HZ_BS                14      // 10 Hz 16-pole Bessel
+#define V450_DF_20_HZ_BS                15      // 20 Hz 16-pole Bessel
+#define V450_DF_50_HZ_BS                16      // 50 Hz 16-pole Bessel
+#define V450_DF_100_HZ_BS               17      // 100 Hz 16-pole Bessel
+.in -5
+.fi
+
+.TP
+\f2loop_resistance_enable_flag\f1
+.br
+enables a loop resistance measurement (about 3 sec to complete) for the given channel.  The results will appear in the
+RES[\f2chnl_num\f1] register. 
+
+Example:
+
+To setup channel 3 with a scan rate of 8.33 samples/second, using RTD 'a' for junction temperature correction, of a type K
+termocouple, wit no digital filtering, and command channel 3 loop resistance to be calculated. 
+
+.nf
+.in +5
+if (v450_config_tc_chnl(pb, 3, V450_RF_CODE_8_33_SPS, V450_RS_CODE_RTD_A, V450_RN_CODE_TYPE_K, V450_DF_NONE, 1) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+.SS \f4int v450_read_loop_resistance(V450_REGS *\f2pb\f4, int \f2chnl_num\f4, float *\f2pohms_data\f4)\f1
+.br
+read a channel's loop resistance.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2chnl_num\f1
+.br
+channel number.
+.TP
+\f2pohms_data\f1
+.br
+pointer to user specified floating point parameter to contain ohms.
+
+Example:
+
+Read loop resistance of channel 6.
+
+.nf
+.in +5
+float ohms[V450_CHNLS_PER_BOARD];
+
+if (v450_read_loop_resistance(pb, 6, &ohms[6]) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+
+.SS \f4int v450_read_analog_chnl(V450_REGS *\f2pb\f4, int \f2chnl_num\f4, float *\f2pvolts_data\f4, int *\f2pcounts\f4)\f1
+.br
+read a voltage from a channel.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2chnl_num\f1
+.br
+channel number.
+.TP
+\f2pvolts_data\f1
+.br
+pointer to user specified floating point parameter to contain volts.
+.TP
+\f2pcounts\f1
+.br
+pointer to user dpecified integer parameter to contain raw counts.
+
+Example:
+
+Read voltage from channel 2 and not read the counts.
+
+.nf
+.in +5
+float volts[V450_CHNLS_PER_BOARD];
+
+if (v450_read_analog_chnl(pb, 2, &volts[2], 0) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+
+.SS \f4int v450_read_tc_chnl(V450_REGS *\f2pb\f4, int \f2chnl_num\f4, char \f2deg_spec\f4, float *\f2ptemp\f4)\f1
+.br
+read temperature for termocouple channel.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2chnl_num\f1
+.br
+channel number.
+.TP
+\f2deg_spec\f1
+.br
+specifies temperature format: 'C' Celsius, 'F' Fahrenheit, 'K' Kelvin, or 'R' Rankin.
+.TP
+\f2ptemp\f1
+.br
+pointer to user specified floating point parameter to contain temperature.
+
+Example:
+
+Read voltage from channel 2 and not read the counts.
+
+.nf
+.in +5
+float temp[V450_CHNLS_PER_BOARD];
+
+if (v450_read_tc_chnl(pb, 2, &temp[2], 0) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+
+.SS \f4int v450_chnl_to_rn_code(V450_REGS *\f2pb\f4, int \f2chnl_num\f4, unsigned short *\f2prn_code\f4)\f1
+.br
+get RN code for channel.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2chnl_num\f1
+.br
+channel number.
+.TP
+\f2prn_code\f1
+.br
+pointer to user defined unsigned integer to contain the RN code.
+
+Example:
+
+Get RN code for channel 7.
+
+.nf
+.in +5
+unsigned short rn_code;
+
+if (v450_chnl_to_rn_code(pb, 7, &rn_code) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+
+.SS \f4int v450_rn_code_to_range(int \f2rn_code\f4, float *\f2pmin\f4, float *\f2pmax\f4)\f1
+.br
+get min/max values for an RN code.
+.TP
+\f2rn_code\f1
+.br
+the RN code.
+.TP
+\f2pmin\f1
+.br
+pointer to user defined floating point parameter to contain min range for RN code.
+.TP
+\f2pmax\f1
+.br
+pointer to user defined floating point parameter to contain max range for RN code.
+
+Example:
+
+Get min/max ranges for RN code V450_RN_CODE_25_V.  "min" will contain -25 and "max" will contain 25.
+
+.nf
+.in +5
+float min, max;
+
+if (v450_rn_code_to_range(V450_RN_CODE_25_V, &min, &max) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+

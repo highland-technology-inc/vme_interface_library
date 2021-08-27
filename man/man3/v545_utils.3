@@ -1,0 +1,1264 @@
+\" -*- nroff -*-
+\" This program is free software; you can redistribute it and/or modify
+\" it under the terms of the GNU General Public License as published by
+\" the Free Software Foundation; either version 2 of the License, or (at
+\" your option) any later version.
+\"
+\" This program is distributed in the hope that it will be useful, but
+\" WITHOUT ANY WARRANTY; without even the implied warranty of
+\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+\" General Public License for more details.
+\"
+\" You should have received a copy of the GNU General Public License
+\" along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+\" Author: Dean W. Anneser
+\" Company: RTLinux Solutions LLC for Highland Technologh, Inc.
+\" Date: Tue Jul 20 14:43:25 2021
+ 
+
+.TH v545_utils 3 
+
+.SH NAME
+\f4v545_utils\f1 - V545 device interface library
+
+.SH SYNOPSIS
+\f4#include \f2"ht_utils_proto.h"\f1
+.br
+\f4#include \f2"misc_math_utils_proto.h"\f1
+.br
+\f4#include \f2"v545_utils_proto.h"\f1
+.sp
+
+.SS READ/WRITE REGISTERS
+\f4unsigned short v545_read_vximfr(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_read_vxitype(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_read_serial(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_read_romid(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_read_romrev(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_read_dash(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_read_state(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_read_uled(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_write_uled(V545_REGS *\f2pb\f4, unsigned short \f2uled\f4)\f1
+.br
+\f4unsigned short v545_read_biss(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_read_calid(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_read_ycal(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_read_dcal(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_read_swin(V545_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v545_write_swout(V545_REGS *\f2pb\f4, unsigned short \f2swout_mask\f4)\f1
+.br
+\f4int v545_read_reg(V545_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned short *\f2reg_value\f4)\f1
+.br
+\f4char *v545_get_cal_date(V545_REGS *\f2pb\f4)\f1
+.br
+\f4int v545_read_dds_block(V545_REGS *\f2pb\f4, int \f2coil\f4, unsigned short *\f2pdds_block\f4)\f1
+.br
+\f4int v545_read_ccb_block(V545_REGS *\f2pb\f4, int \f2coil\f4, unsigned short *\f2pccb_block\f4)\f1
+.br
+\f4char *v545_read_xfmr_type(V545_REGS *\f2pb\f4, int \f2coil\f4)\f1
+
+.SS FLASH OPERATIONS
+\f4char *v545_sprintf_checksum_flash(V545_REGS *\f2pb\f4)\f1
+.br
+\f4int v545_load_flash(V545_REGS *\f2pb\f4, char *\f2flash_filename\f4, int *\f2percent_complete\f4)\f1
+
+.SS MACRO EXECUTION
+\f4int v545_execute_macro(V545_REGS *\f2pb\f4, unsigned short \f2macro\f4, unsigned short *\f2params\f4, unsigned short *\f2arg\f4)\f1
+
+.SS CONFIGURATION
+\f4int v545_config_synchro_input(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2EX_coil\f4, int \f2A_coil\f4, int \f2B_coil\f4, int \f2C_coil\f4, int \f2signed_flag)\f1
+.br
+\f4int v545_config_resolver_input(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2EX_coil\f4, int \f2X_coil\f4, int \f2Y_coil\f4, int \f2signed_flag)\f1
+.br
+\f4int v545_config_synchro_output(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2dds_chnl\f4, int \f2dds_freq\f4, int \f2EX_coil\f4, int \f2A_coil\f4, int \f2B_coil\f4, int \f2C_coil\f4, int \f2A_inv_flag\f4, int \f2B_inv_flag\f4, int \f2C_inv_flag\f4, float \f2min_pos\f4, float \f2max_pos\f4, float \f2init_pos\f4, int \f2sbits\f4, int \f2signed_flag)\f1
+.br
+\f4int v545_config_resolver_output(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2dds_chnl\f4, int \f2dds_freq\f4, int \f2EX_coil\f4, int \f2X_coil\f4, int \f2Y_coil\f4, int \f2X_inv_flag\f4, int \f2Y_inv_flag\f4, float \f2min_pos\f4, float \f2max_pos\f4, float \f2init_pos\f4, int \f2sbits\f4, int \f2signed_flag)\f1
+.br
+\f4int v545_config_lvdt_rvdt_input(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2EX_coil\f4, int \f2A_coil\f4, int \f2B_coil\f4, int \f2open_wiring_flag\f4)\f1
+.br
+\f4int v545_config_lvdt_rvdt_output(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2dds_chnl\f4, int \f2dds_freq\f4, int \f2EX_coil\f4, int \f2A_coil\f4, int \f2B_coil\f4, int \f2A_inv_flag\f4, int \f2B_inv_flag\f4, int \f2open_wiring_flag\f4, float \f2min_pos\f4, float \f2max_pos\f4, float \f2init_pos\f4, int \f2sbits\f4)\f1
+
+.SS READ/WRITE OPERATIONS
+\f4int v545_read_synchro_resolver(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, float \f2min_pos\f4, float \f2max_pos\f4, float *\f2current_pos\f4, float *\f2measured_secondary_voltage\f4, int \f2signed_flag)\f1
+.br
+\f4int v545_write_synchro_resolver(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, float \f2min_pos\f4, float \f2max_pos\f4, float \f2current_pos\f4, int \f2signed_flag)\f1
+.br
+\f4int v545_read_lvdt_rvdt(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2min_counts\f4, int \f2max_counts\f4, float \f2min_pos\f4, float \f2max_pos\f4, float *\f2current_pos\f4, float *\f2measured_secondary_voltage\f4)\f1
+.br
+\f4int v545_write_lvdt_rvdt(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, float \f2min_pos\f4, float \f2max_pos\f4, float \f2current_pos\f4)\f1
+
+.SS READ COUNT VALUE FOR POSITION
+\f4int v545_read_synchro_resolver_position_counts(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int *\f2counts\f4, int \f2signed_flag\f4)\f1
+.br
+\f4int v545_read_lvdt_rvdt_position_counts(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int *\f2counts\f4)\f1
+
+.SS OVERRIDE BLOCK OPERATIONS
+\f4int v545_config_override_position_velocity(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4, int \f2fb_chnl\f4, float \f2target_position\f4, float \f2target_velocity\f4, int \f2min_counts\f4, int \f2max_counts\f4, float \f2min_pos\f4, float \f2max_pos\f4)\f1
+.br
+\f4int v545_config_override_switch(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4, int \f2swin_mask\f4)\f1
+.br
+\f4int v545_config_override_watchdog(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4, float \f2watchdog_time\f4)\f1
+.br
+\f4int v545_config_override_swtrigger(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4)\f1
+.br
+\f4int v545_set_override_swtrigger(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4)\f1
+
+.SS CLEANUP
+\f4int v545_clear_function_block(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4)\f1
+.br
+\f4int v545_clear_function_blocks(V545_REGS *\f2pb\f4)\f1
+.br
+\f4int v545_clear_active_override(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4)\f1
+.br
+\f4int v545_clear_override_block(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4)\f1
+.br
+\f4int v545_clear_override_blocks(V545_REGS *\f2pb\f4)\f1
+
+.SS ROUTINES USED INTERNALLY
+\f4int v545_write_function_code(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, unsigned short \f2function_code\f4)\f1
+.br
+\f4int v545_config_dds(V545_REGS *\f2pb\f4, int \f2dds_chnl\f4, int \f2dds_freq\f4)\f1
+.br
+\f4int v545_config_ccb(V545_REGS *\f2pb\f4, int \f2EX_coil\f4, int \f2dds_target_coil\f4)\f1
+.br
+\f4int v545_is_a_valid_function_block_chnl(int \f2fb_chnl\f4)\f1
+.br
+\f4int v545_is_a_valid_override_block_chnl(int \f2ob_chnl\f4)\f1
+.br
+\f4int v545_override_get_regfile_index(V545_REGS *\f2pb\f4, int *\f2regfile_index\f4)\f1
+.br
+\f4int v545_get_fb_type(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4)\f1
+
+.SH DESCRIPTION
+
+The \f4v545_utils\f1 library is a comprehensive interface to the Highland Technology V545 LVDT/RVDT/Synchro/Resolver interface.
+The V545 can simulate or measure any of these devices with either internal or external excitation.  It has 24 transformer
+isolated AC simewave generator/acquisition channels.  Multiple channels can share an excitation channel.  There are 12 function
+blocks that can use any of the 24 coils for device simulation or measurement.  Additionally (and this is what separates this
+board from other industry offerings), there are health and safety capabilities built into the board.  There are 4 override
+function blocks that can drive an output to a user defined safe operating point and at user defined velocity, if (1) the
+computer or test software were to fail (via a watchdog timer mechanism), or (2) if one of 4 switch inputs are activated (such as
+for example: "Emergency Stop" or "Fuel Cuttoff").
+
+.SH DEVICE INTERFACE CALL ARGUMENTS
+.TP
+\f2A_coil\f1
+.br
+A coil specification (0-23) for synchros, lvdts, and rvdts.
+.TP
+\f2A_inv_flag\f1
+.br
+flips the polarity of A_coil outputs, effectively shifting their phase by 180 degrees.
+.TP
+\f2B_coil\f1
+.br
+B coil specification (0-23) for synchros, lvdts, and rvdts.
+.TP
+\f2B_inv_flag\f1
+.br
+flips the polarity of B_coil outputs, effectively shifting their phase by 180 degrees.
+.TP
+\f2C_coil\f1
+.br
+C coil specification (0-23) for synchros.
+.TP
+\f2C_inv_flag\f1
+.br
+flips the polarity of C_coil outputs, effectively shifting their phase by 180 degrees.
+.TP
+\f2EX_coil\f1
+.br
+excitation coil specification (0-23).
+.TP
+\f2X_coil\f1
+.br
+X coil specification (0-23) for resolvers.
+.TP
+\f2X_inv_flag\f1
+.br
+flips the polarity of X_coil outputs, effectively shifting their phase by 180 degrees.
+.TP
+\f2Y_coil\f1
+.br
+Y coil specification (0-23) for resolvers
+.TP
+\f2Y_inv_flag\f1
+.br
+flips the polarity of Y_coil outputs, effectively shifting their phase by 180 degrees.
+.TP
+\f2arg\f1
+.br
+used as a pointer to percent complete for V545_MACRO_FLASH_ERASE macro in the v545_execute_macro() call.
+.TP
+\f2coil\f1
+.br
+associate a ccb_block to an output coil in v545_read_ccb_block().
+.TP
+\f2current_pos\f1
+.br
+read or write current position.
+.TP
+\f2dds_chnl\f1
+.br
+specifies the DDS channel for input excitation (0-23) or output excitation (24-31).  Note, dds_chnl 31 is a fixed frequency of 400 Hz.
+.TP
+\f2dds_freq\f1
+.br
+specifies the DDS frequency in Hz for an output excitation channel.
+.TP
+\f2fb_chnl\f1
+.br
+specifies the function block 0-11.
+.TP
+\f2flash_filename\f1
+.br
+specifies the new flash filename for v545_load_flash().
+.TP
+\f2function_code\f1
+.br
+specify function code to function or override blocks.
+.nf
+.in +5
+value   function blocks
+-----   ------------------------
+\f20\f1       unused
+\f23\f1       LVDT/RVDT input (acquisition)
+\f24\f1       LVDT/RVDT output (simulation)
+\f25\f1       Synchro/Resolver input (acquisition)
+\f26\f1       Synchro/Resolver output (simulation)
+.in -5
+.fi
+
+.nf
+.in +5
+value   override blocks
+-----   ------------------------
+\f20x00\f1    unused  
+\f20x11\f1    watchdog timer override
+\f20x12\f1    switch input override (also for software trigger)
+.in -5
+.fi
+
+.TP
+\f2init_pos\f1
+.br
+specifies the initial position for output function blocks
+.TP
+\f2macro\f1
+.br
+specifies the macro function for v545_execute_macro() routine.  The macro commands are defined as follows:
+.nf
+.in +5
+\f2V545_MACRO_NOOP                  \f10x8400
+\f2V545_MACRO_RESET                 \f10x8407
+\f2V545_MACRO_FLASH_UNLOCK          \f10x8408
+\f2V545_MACRO_FLASH_ERASE           \f10x8409
+\f2V545_MACRO_FLASH_WRITE           \f10x840a
+\f2V545_MACRO_FLASH_CHECKSUM        \f10x840b
+\f2V545_MACRO_RESET_PSD             \f10x840c
+\f2V545_MACRO_READ_FLASH            \f10x8410
+\f2V545_MACRO_READ_POWER_SUPPLY     \f10x8411
+\f2V545_MACRO_RESET_DDS             \f10x8414
+.in -5
+.fi
+.TP
+\f2max_counts\f1
+.br
+count value that correlates with the \f2max_pos\f1.  This can be read with the v545_read_lvdt_rvdt_position_counts() routine, and is required for v545_read_lvdt_rvdt() routine.
+.TP
+\f2max_pos\f1
+.br
+is the upper limit of the input or output range of the LVDT/RVDT/Synchro/Resolver.
+.TP
+\f2measured_secondary_voltage\f1
+.br
+is the parameter to hold the measured secondary voltage for reading LVDT/RVDT/Synchro/Resolvers.
+.TP
+\f2min_counts\f1
+.br
+count value that correlates with the \f2min_pos\f1.  This can be read with the v545_read_lvdt_rvdt_position_counts() routine, and is required for v545_read_lvdt_rvdt() routine.
+.TP
+\f2min_pos\f1
+.br
+is the lower limit of the input or output range of the LVDT/RVDT/Synchro/Resolver.
+.TP
+\f2ob_chnl\f1
+.br
+specifies override block channels (12-15).
+.TP
+\f2offset\f1
+.br
+specifies the offset in bytes for reading registers of the v545 card through the v545_read_reg() call.
+.TP
+\f2open_wiring_flag\f1
+.br
+specifies the LVDT/RVDT is of an open-wiring configuration (as opposed to ratiometric).
+.TP
+\f2params\f1
+.br
+used in the v545_execute_macro() function to supply extra arguments to the macro operation.
+.TP
+\f2pb\f1
+.br
+a pointer to the base virtual address of the of the v545 board, and defines structures that map over the registers.  This can be attained by calling get_vaddr_for_device().
+.TP
+\f2pccb_block\f1
+.br
+is a pointer to the channel control block, used in the v545_read_ccb_block() routine.
+.TP
+\f2percent_complete\f1
+.br
+is a pointer to an integer parameter that will contain the active percent complete when loading flash.
+.TP
+\f2reg_value\f1
+.br
+is a pointer to an unsigned short that will contain the value of a register as used in the v545_read_reg() routine.
+.TP
+\f2regfile_index\f1
+.br
+is a pointer to an integer that contains the next available register file index -- used in the v545_override_get_regfile_index() routine for override block functions.
+.TP
+\f2sbits\f1
+.br
+specifies the radial or linear (in % of full span) travel per second, when the override block is engaged.  The smaller the time
+interval, the quicker the response is to a change in position request.  The target velocity for normal operation is fixed at MAX
+(TV = 0x7fff).  However for override conditions, the user specifies a override TP and TV, and the TV resolution is a function of
+the specified time interval -- i.e. the smaller the time interval, the lower the resolution of TV.  For example if the user
+specifies a TV of 20 deg/sec with a 1 msec update rate, the actual TV will be 16.5 deg/sec.
+
+.nf
+.in +5
+
+360 degs       1 update
+------------ * --------  = 5.49316 deg/sec
+65536 counts   0.001 sec
+
+20 deg/sec
+--------------- = 3.64, however TV register is a 16 bit unsigned short (for MOVE_HARD_STOP mode)
+5.49316 deg/sec
+
+therefore:
+
+3 * 5.49316 deg/sec = 16.48 deg/sec
+
+TV round off error is 3.52 deg/sec
+
+Whereas if a 10 msec update rate was selected:
+
+360 degs       1 update
+------------ * --------  = 0.549316 deg/sec
+65536 counts   0.01 sec
+
+20 deg/sec
+---------------- = 36.41, however TV register is a 16 bit unsigned short (for MOVE_HARD_STOP mode)
+0.549316 deg/sec
+
+36 * 0.549316 deg/sec = 19.78 deg/sec
+
+TV round off error is 0.22 deg/sec
+.in -5
+.fi
+
+For Synchro/Resolvers:
+.nf
+.in +5
+S value         smallest time interval          TV LSB (degrees per second)
+-------         ----------------------          ---------------------------
+\f20\f1 (default)     1 msec                          5.49316
+\f21\f1               10 msec                         0.54932
+\f22\f1               100 msec                        0.05493
+\f23\f1               reserved                        reserved
+.in -5
+.fi
+
+For LVDT/RVDTs:
+.nf
+.in +5
+S value         smallest time interval          TV LSB (amount of full span per second)
+-------         ----------------------          ---------------------------------------
+\f20\f1 (default)     1 msec                          0.00152587
+\f21\f1               10 msec                         0.00015259
+\f22\f1               100 msec                        0x00001526
+\f23\f1               reserved                        reserved
+.in -5
+.fi
+
+.TP
+\f2signed_flag\f1
+.br
+0 = unsigned -- range = 0 to 359 deg, 1 = signed 179 to -179 deg.
+
+.TP
+\f2swin_mask\f1
+.br
+specifies which switch input to trigger an override block
+.nf
+.in +5
+swin_mask       switch          J3 pin
+---------       ------          ------
+\f20x1\f1             swin0           2
+\f20x2\f1             swin1           3
+\f20x4\f1             swin2           4
+\f20x8\f1             swin3           5
+.in -5
+.fi
+.TP
+\f2swout_mask\f1
+.br
+used in the v545_write_swout() routine to drive output switch 0 or 1.
+.nf
+.in +5
+swout_mask      switch          J3 pin
+----------      ------          ------
+\f20x1\f1             swout0          6
+\f20x2\f1             swout1          7
+.in -5
+.fi
+.TP
+\f2target_position\f1
+.br
+set the target position to move an output channel when an override is set, used in the v545_set_override_position_velocity() routine.
+.TP
+\f2target_velocity\f1
+.br
+set the target velocity to move an output channel when an override is set, used in the v545_set_override_position_velocity() routine.
+.TP
+\f2uled\f1
+.br
+user LED control mask.
+.TP
+\f2watchdog_time\f1
+.br
+sets the override watchdog time, used in the v545_config_override_watchdog() routine.
+
+.SH REGISTER ACCESS EXAMPLES
+In all the following examples, \f2pb\f1 is the virtual address pointer to the board.
+
+.SS \f4unsigned short v545_read_vximfr(V545_REGS *\f2pb\f4)\f1
+Returns the value of the VXIMFR register.  Highland Technology's registered code is 0xfeee.
+
+.SS \f4unsigned short v545_read_vxitype(V545_REGS *\f2pb\f4)\f1
+Returns the value of the VXITYPE register.  These are defined in \f2vme_search_specs_stor.h\f1.
+
+.nf
+.in +5
+v210 -- VME Relay Module                                              0x56c2
+v220 -- VME 4-20mA Analog Control I/O Module                          0x56cc
+v230 -- VME Analog Input Module                                       0x56d6
+v250 -- VME Digital I/O Module                                        0x56ea
+v340 -- VME Waveform Generator Module                                 0x5744
+v344 -- VME Waveform Generator                                        0x5648
+v346 -- VME Waveform Generator                                        0x564a
+v350 -- VME Analog/Digital Function Generator                         0x574e
+v360 -- VME Tachometer Module                                         0x5758
+v365 -- VME Tachometer / Overspeed Module                             0x575d
+v370 -- VME Waveform Generator                                        0x5762
+v375 -- VME Waveform Generator                                        0x5767
+v380 -- VME Strain Gauge / Weighing Module                            0x576c
+v385 -- VME Strain Gauge / Load Cell Module                           0x5771
+v410 -- VME RTD / Resistance Input Module                             0x578a
+v420 -- VME Isolated Resistance Simulator                             0x5794
+v450 -- VME Analog Input Module                                       0x57b2
+v460 -- VME Analog Scanner Module                                     0x57bc
+v470 -- VME Analog Output and Thermocouple Simulator Module           0x57c6
+v490 -- VME Multi-range Digitizer                                     0x57da
+v545 -- VME Synchro/Resolver/LVDT/RVDT Simulation/Acquisition Module  0x5811
+.in -5
+.fi
+
+.SS \f4unsigned short v545_read_serial(V545_REGS *\f2pb\f4)\f1
+Returns the value of the SERIAL register.
+
+.SS \f4unsigned short v545_read_romid(V545_REGS *\f2pb\f4)\f1
+Returns the value of the ROMID register.
+
+.SS \f4unsigned short v545_read_romrev(V545_REGS *\f2pb\f4)\f1
+Returns the value of the ROMREV register.
+
+.SS \f4unsigned short v545_read_dash(V545_REGS *\f2pb\f4)\f1
+Returns the value of the DASH register.
+
+.SS \f4unsigned short v545_read_state(V545_REGS *\f2pb\f4)\f1
+Returns the value of the STATE register.
+
+.SS \f4unsigned short v545_read_uled(V545_REGS *\f2pb\f4)\f1
+Returns the value of the ULED register.
+
+.SS \f4unsigned short v545_write_uled(V545_REGS *\f2pb\f4, unsigned short \f2uled\f4)\f1
+Write \f2uled\f1 into the ULED register.
+
+.SS \f4unsigned short v545_read_biss(V545_REGS *\f2pb\f4)\f1
+Returns the value of the BISS register.
+
+.SS \f4unsigned short v545_read_calid(V545_REGS *\f2pb\f4)\f1
+Returns the value of the CALID register.
+
+.SS \f4unsigned short v545_read_ycal(V545_REGS *\f2pb\f4)\f1
+Returns the value of the YCAL register -- calibration year.
+
+.SS \f4unsigned short v545_read_dcal(V545_REGS *\f2pb\f4)\f1
+Returns the value of the DCAL register -- calibration month/day.
+
+.SS \f4unsigned short v545_read_swin(V545_REGS *\f2pb\f4)\f1
+Returns the value of the SWIN register (offset == 0x20).
+
+.SS \f4unsigned short v545_write_swout(V545_REGS *\f2pb\f4, unsigned short \f2swout_mask\f4)\f1
+Write \f2swout_mask\f1 to SWOUT register.
+
+.SS \f4int v545_read_reg(V545_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned short *\f2reg_value\f4)\f1
+Read the value of any register, specified with \f2offset\f1 bytes, and store in \f2reg_value\f1.
+
+.SS \f4char *v545_get_cal_date(V545_REGS *\f2pb\f4)\f1
+Returns the calibration date in the form of "mm/dd/yyyy".
+
+.SS \f4int v545_read_dds_block(V545_REGS *\f2pb\f4, int \f2coil\f4, unsigned short *\f2pdds_block\f4)\f1
+Returns the contents of a 3 word DDS block to a user parameter pointed to by \f2pccb_block\f1.
+
+.SS \f4int v545_read_ccb_block(V545_REGS *\f2pb\f4, int \f2coil\f4, unsigned short *\f2pccb_block\f4)\f1
+Returns the contents of a 7 word CCB block to a user parameter pointed to by \f2pccb_block\f1.
+\f4char *v545_read_xfmr_type(V545_REGS *\f2pb\f4, int \f2coil\f4)\f1
+Returns string describing transformer type for \f2coil\f1.
+
+.SH REGISTER ACCESS CODING EXAMPLES
+.nf
+unsigned short vixmfr, vxitype, uled;
+unsigned short dds_block[3], ccb_block[7];
+int chnl = 4;
+
+vximfr = v545_read_vximfr(pb);
+vxitype = v545_read_type(pb);
+v545_write_uled(pb, 0xff00);        // make orange LED bink on for 1 sec and off for 1 sec
+
+if (v545_read_dds_block(pb, 0, dds_block) == -1)
+  printf("ERROR reading DDS block\n");
+if (v545_read_ccb_block(pb, 0, ccb_block) == -1)
+  printf("ERROR reading CCB block\n");
+
+printf("%s\n", v545_get_cal_date(pb));
+printf("coil type for channel %d = %s\n", chnl, v545_read_xfmr_type(pb, chnl));    // print coil type for chnl
+.fi
+
+.SH FLASH MEMORY
+.SS \f4char *v545_sprintf_checksum_flash(V545_REGS *\f2pb\f4)\f1
+Returns string containing flash status.
+
+.SS \f4int v545_load_flash(V545_REGS *\f2pb\f4, char *\f2flash_filename\f4, int *\f2percent_complete\f4)\f1
+Loads flash with \f2flash_filename\f1, and optionally loads the percent complete into \f2percent_complete\f1 parameter.  If no
+percent complete is desired, us a zero (0) as the third argument.
+
+.SH MACRO EXECUTION
+.SS \f4int v545_execute_macro(V545_REGS *\f2pb\f4, unsigned short \f2macro\f4, unsigned short *\f2params\f4, unsigned short *\f2arg\f4)\f1
+Returns 0 on success, -1 on failure.  Execute one of the following macros:
+.nf
+.in +5
+\f2V545_MACRO_NOOP\f1, \f2params\f1 = 0, \f2arg\f1 = 0
+\f2V545_MACRO_RESET\f1, \f2params\f1 = 0, \f2arg\f1 = 0
+\f2V545_MACRO_FLASH_UNLOCK\f1, \f2params\f1 = 0, \f2arg\f1 = 0
+\f2V545_MACRO_FLASH_ERASE\f1, \f2params\f1 = 0, \f2arg\f1 = points to percent complete parameter
+\f2V545_MACRO_FLASH_WRITE\f1, \f2params\f1 = 0, \f2arg\f1 = 0
+\f2V545_MACRO_FLASH_CHECKSUM\f1, \f2params\f1 = 0, \f2arg\f1 = points to array[2] to receive param0/param1 contents
+\f2V545_MACRO_RESET_PSD\f1, \f2params\f1 = 0, \f2arg\f1 = 0
+\f2V545_MACRO_READ_FLASH\f1, \f2params\f1 = 0, \f2arg\f1 = 0
+\f2V545_MACRO_READ_POWER_SUPPLY\f1, \f2params\f1 = 0, \f2arg\f1 = points to array[8] to receive power supply information
+\f2V545_MACRO_RESET_DDS\f1, \f2params\f1 = 0, \f2arg\f1 = 0
+.in -5
+.fi
+
+.SH CONFIGURATION
+All routines return a 0 on success, -1 on failure.  
+
+.SS \f4int v545_config_synchro_input(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2EX_coil\f4, int \f2A_coil\f4, int \f2B_coil\f4, int \f2C_coil\f4, int \f2signed_flag\f4)\f1
+Configure a Synchro input channel.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4int \f2EX_coil\f1
+.br
+is the excitation coil (transformer) number.
+.TP
+\f4int \f2A_coil\f1
+.br
+is the "A" coil (transformer) number for the synchro.
+.TP
+\f4int \f2B_coil\f1
+.br
+is the "B" coil (transformer) number for the synchro.
+.TP
+\f4int \f2C_coil\f1
+.br
+is the "C" coil (transformer) number for the synchro.
+.br
+.TP
+\f4int \f2signed_flag\f1
+.br
+0 = unsigned -- range = 0 to 359 deg, 1 = signed 179 to -179 deg.
+
+.SS \f4int v545_config_resolver_input(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2EX_coil\f4, int \f2X_coil\f4, int \f2Y_coil\f4, int \f2signed_flag\f4)\f1
+Configure a Resolver input channel.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4int \f2EX_coil\f1
+.br
+is the excitation coil (transformer) number.
+.TP
+\f4int \f2X_coil\f1
+.br
+is the "X" coil (transformer) number for the synchro.
+.TP
+\f4int \f2Y_coil\f1
+.br
+is the "Y" coil (transformer) number for the synchro.
+.br
+.TP
+\f4int \f2signed_flag\f1
+.br
+0 = unsigned -- range = 0 to 359 deg, 1 = signed 179 to -179 deg.
+
+.SS \f4int v545_config_synchro_output(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2dds_chnl\f4, int \f2dds_freq\f4, int \f2EX_coil\f4, int \f2A_coil\f4, int \f2B_coil\f4, int \f2C_coil\f4, int \f2A_inv_flag\f4, int \f2B_inv_flag\f4, int \f2C_inv_flag\f4, float \f2min_pos\f4, float \f2max_pos\f4, float \f2init_pos\f4, int \f2sbits\f4, int \f2signed_flag\f4)\f1
+Configure a Synchro output channel
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4int \f2dds_chnl\f1 \f4int \f2dds_chnl\f1
+.br
+For external excitation that is input on \f2EX_coil\f1, set \f2dds_freq\f1 to 0 (\f2dds_chnl\f1 value is ignored).
+.br
+For internal excitation, specify \f2dds_chnl\f1 0-7 and dds_freq in Hz.  Note: DDS channel 7 is set to a fixed frequency of 400
+Hz.
+.TP
+\f4int \f2EX_coil\f1
+.br
+specifies the coil (transformer) that the excitation is either sourced (see: \f2dds_chnl\f1 and \f2dds_freq\f1) for output, or
+read for input.
+.TP
+\f4int \f2A_coil\f1
+.br
+is the "A" coil (transformer) number for the synchro output.
+.TP
+\f4int \f2B_coil\f1
+.br
+is the "B" coil (transformer) number for the synchro output.
+.TP
+\f4int \f2C_coil\f1
+.br
+is the "C" coil (transformer) number for the synchro output.
+.TP
+\f4int \f2A_inv_flag\f1
+.br
+flips the polarity of the A channel, effectively shifting their phase 180 degrees.  This capability was added to handle facility
+wiring issues where the wiring may be reversed.  If the invert flag != 0, the inversion will be set.
+.TP
+\f4int \f2B_inv_flag\f1
+.br
+flips the polarity of the B channel, effectively shifting their phase 180 degrees.
+.TP
+\f4int \f2C_inv_flag\f1
+.br
+flips the polarity of the C channel, effectively shifting their phase 180 degrees.
+.TP
+\f4float \f2min_pos\f1
+.br
+sets the minimum position of the output device -- used in scaling of output.  By default, MOVE_HARD_STOP (OPR = 5) mode is
+selected, so by definition there is a minimum and maximum position that the output will not pass through
+.TP
+\f4float \f2max_pos\f1
+.br
+sets the maximum position of the output device -- used in scaling of output.
+.TP
+\f4float \f2init_pos\f1
+.br
+sets the initial position of the output device.
+.TP
+\f4int \f2sbits\f1
+.br
+ranges 0-2.  This is primarily used in TV calculations for override blocks (see discussion above).
+.br
+.TP
+\f4int \f2signed_flag\f1
+.br
+0 = unsigned -- range = 0 to 359 deg, 1 = signed 179 to -179 deg.
+
+.SS \f4int v545_config_resolver_output(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2dds_chnl\f4, int \f2dds_freq\f4, int \f2EX_coil\f4, int \f2X_coil\f4, int \f2Y_coil\f4, int \f2X_inv_flag\f4, int \f2Y_inv_flag\f4, float \f2min_pos\f4, float \f2max_pos\f4, float \f2init_pos\f4, int \f2sbits\f4, int \f2 signed_flag\f4)\f1
+Configure a Resolver output channel.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4int \f2dds_chnl\f1 \f4int \f2dds_chnl\f1
+.br
+For external excitation that is input on \f2EX_coil\f1, set \f2dds_freq\f1 to 0 (\f2dds_chnl\f1 value is ignored).
+.br
+For internal excitation, specify \f2dds_chnl\f1 0-7 and dds_freq in Hz.  Note: DDS channel 7 is set to a fixed frequency of 400
+Hz.
+.TP
+\f4int \f2EX_coil\f1
+.br
+specifies the coil (transformer) that the excitation is either sourced (see: \f2dds_chnl\f1 and \f2dds_freq\f1) for output, or
+read for input.
+.TP
+\f4int \f2X_coil\f1
+.br
+is the "X" coil (transformer) number for the resolver output.
+.TP
+\f4int \f2Y_coil\f1
+.br
+is the "Y" coil (transformer) number for the resolver output.
+.TP
+\f4int \f2X_inv_flag\f1
+.br
+flips the polarity of the X channel, effectively shifting their phase 180 degrees.  This capability was added to handle facility
+wiring issues where the wiring may be reversed.  If the invert flag != 0, the inversion will be set.
+.TP
+\f4int \f2Y_inv_flag\f1
+.br
+flips the polarity of the Y channel, effectively shifting their phase 180 degrees.
+.TP
+\f4float \f2min_pos\f1
+.br
+sets the minimum position of the output device -- used in scaling of output.  By default, MOVE_HARD_STOP (OPR = 5) mode is
+selected, so by definition there is a minimum and maximum position that the output will not pass through
+.TP
+\f4float \f2max_pos\f1
+.br
+sets the maximum position of the output device -- used in scaling of output.
+.TP
+\f4float \f2init_pos\f1
+.br
+sets the initial position of the output device.
+.TP
+\f4int \f2sbits\f1
+.br
+ranges 0-2.  This is primarily used in TV calculations for override blocks (see discussion above).
+.br
+.TP
+\f4int \f2signed_flag\f1
+.br
+0 = unsigned -- range = 0 to 359 deg, 1 = signed 179 to -179 deg.
+
+.SS \f4int v545_config_lvdt_rvdt_input(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2EX_coil\f4, int \f2A_coil\f4, int \f2B_coil\f4, int \f2open_wiring_flag\f4)\f1
+Configure a LVDT or RVDT input channel.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4int \f2EX_coil\f1
+.br
+specifies the coil (transformer) that the excitation is either sourced (see: \f2dds_chnl\f1 and \f2dds_freq\f1) for output, or
+read for input.
+.TP
+\f4int \f2A_coil\f1
+.br
+is the "A" coil (transformer) number for the resolver output.
+.TP
+\f4int \f2B_coil\f1
+.br
+is the "B" coil (transformer) number for the resolver output.
+.TP
+\f4int \f2open_wiring_flag\f1
+.br
+if \f2open_wiring_flag\f1 == 0 then use ratiometric conversion, otherwise use open wiring method.
+
+.SS \f4int v545_config_lvdt_rvdt_output(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2dds_chnl\f4, int \f2dds_freq\f4, int \f2EX_coil\f4, int \f2A_coil\f4, int \f2B_coil\f4, int \f2A_inv_flag\f4, int \f2B_inv_flag\f4, int \f2open_wiring_flag\f4, float \f2min_pos\f4, float \f2max_pos\f4, float \f2init_pos\f4, int \f2sbits\f4)\f1
+Configure a LVDT or RVDT output channel.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4int \f2dds_chnl\f1 \f4int \f2dds_chnl\f1
+.br
+For external excitation that is input on \f2EX_coil\f1, set \f2dds_freq\f1 to 0 (\f2dds_chnl\f1 value is ignored).
+.br
+For internal excitation, specify \f2dds_chnl\f1 0-7 and dds_freq in Hz.  Note: DDS channel 7 is set to a fixed frequency of 400
+Hz.
+.TP
+\f4int \f2EX_coil\f1
+.br
+specifies the coil (transformer) that the excitation is either sourced (see: \f2dds_chnl\f1 and \f2dds_freq\f1) for output, or
+read for input.
+.TP
+\f4int \f2A_coil\f1
+.br
+is the "A" coil (transformer) number for the resolver output.
+.TP
+\f4int \f2B_coil\f1
+.br
+is the "B" coil (transformer) number for the resolver output.
+.TP
+\f4int \f2A_inv_flag\f1
+.br
+flips the polarity of the X channel, effectively shifting their phase 180 degrees.  This capability was added to handle facility
+wiring issues where the wiring may be reversed.  If the invert flag != 0, the inversion will be set.
+.TP
+\f4int \f2B_inv_flag\f1
+.br
+flips the polarity of the Y channel, effectively shifting their phase 180 degrees.
+.TP
+\f4int \f2open_wiring_flag\f1
+.br
+if \f2open_wiring_flag\f1 == 0 then use ratiometric conversion, otherwise use open wiring method.
+.TP
+\f4float \f2min_pos\f1
+.br
+sets the minimum position of the output device -- used in scaling of output.
+.TP
+\f4float \f2max_pos\f1
+.br
+sets the maximum position of the output device -- used in scaling of output.
+.TP
+\f4float \f2init_pos\f1
+.br
+sets the initial position of the output device.
+.TP
+\f4int \f2sbits\f1
+.br
+ranges 0-2.  This is primarily used in TV calculations for override blocks (see discussion above).
+
+.SH READ/WRITE DEVICES
+All routines return a 0 on success, -1 on failure.  
+
+.SS \f4int v545_read_synchro_resolver(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, float \f2min_pos\f4, float \f2max_pos\f4, float *\f2current_pos\f4, float *\f2measured_secondary_voltage\f4, int \f2signed_flag\f4)\f1
+Read a Synchro or Resolver input.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4float \f2min_pos\f1
+.br
+specifies the minimum position of the input device -- used in scaling of input.
+.TP
+\f4float \f2max_pos\f1
+.br
+specifies the maximum position of the input device -- used in scaling of input.
+.TP
+\f4float *\f2current_pos\f1
+.br
+pointer to user defined floating point parameter to receive the current position.
+.TP
+\f4float *\f2measured_secondary_voltage\f1
+.br
+optionally store measured secondary voltage reading into user defined parameter.  If reading is not needed, simply provide an
+argument of 0.
+.TP
+\f4int \f2signed_flag\f1
+.br
+0 = unsigned -- range = 0 to 359 deg, 1 = signed 179 to -179 deg.
+
+.SS \f4int v545_write_synchro_resolver(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, float \f2min_pos\f4, float \f2max_pos\f4, float \f2current_pos\f4, int \f2signed_flag\f4)\f1
+Write a Synchro or Resolver output.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4float \f2min_pos\f1
+.br
+specifies the minimum position of the output device -- used in scaling of output.
+.TP
+\f4float \f2max_pos\f1
+.br
+specifies the maximum position of the output device -- used in scaling of output.
+.TP
+\f4float \f2current_pos\f1
+.br
+the current position to drive the synchro/resolver.
+.TP
+\f4int \f2signed_flag\f1
+.br
+0 = unsigned -- range = 0 to 359 deg, 1 = signed 179 to -179 deg.
+
+.SS \f4int v545_read_lvdt_rvdt(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int \f2min_counts\f4, int \f2max_counts\f4, float \f2min_pos\f4, float \f2max_pos\f4, float *\f2current_pos\f4, float *\f2measured_secondary_voltage\f4)\f1
+Read a LVDT or RVDT input.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4int \f2min_counts\f1
+.br
+specifies the count value for the minimum position of the input device.
+.TP
+\f4int \f2max_counts\f1
+.br
+specifies the count value for the maximum position of the input device.
+.TP
+\f4float \f2min_pos\f1
+.br
+specifies the minimum position of the output device -- used in scaling of input.
+.TP
+\f4float \f2max_pos\f1
+.br
+specifies the maximum position of the output device -- used in scaling of input.
+.TP
+\f4float *\f2current_pos\f1
+.br
+pointer to user defined floating point parameter to receive the current position.
+.TP
+\f4float *\f2measured_secondary_voltage\f1
+.br
+optionally store measured secondary voltage reading into user defined parameter.  If reading is not needed, simply provide an
+argument of 0.
+
+.SS \f4int v545_write_lvdt_rvdt(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, float \f2min_pos\f4, float \f2max_pos\f4, float \f2current_pos\f4)\f1
+Write a LVDT or RVDT output.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4float \f2min_pos\f1
+.br
+specifies the minimum position of the output device -- used in scaling of output.
+.TP
+\f4float \f2max_pos\f1
+.br
+specifies the maximum position of the output device -- used in scaling of output.
+.TP
+\f4float \f2current_pos\f1
+.br
+the current position to drive the lvdt/rvdt.
+
+.SH READ COUNT VALUE FOR POSITION
+Used to retrieve count values for SYNCHRO/RESOLVER or LVDT/RVDT minimum and maximum positions.  All routines return a 0 on
+success, -1 on failure.   
+
+.SS \f4int v545_read_synchro_resolver_position_counts(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, int *\f2counts\f4, int \f2signed_flag\f4)\f1
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4int *\f2counts\f1
+.br
+points to a user defined parameter to receive the signed or unsigned count value for a given position.  This is used to min/max count values
+for min/max positions.
+.TP
+\f4int \f2signed_flag\f1
+.br
+0 = unsigned -- range = 0 to 359 deg, 1 = signed 179 to -179 deg.
+
+.SS \f4int v545_read_lvdt_rvdt_position_counts(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, short *\f2counts\f4)\f1
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4int *\f2counts\f1
+.br
+points to a user defined parameter to receive signed the count value for a given position.  This is used to min/max count values for
+min/max positions.
+
+.SH OVERRIDE BLOCK OPERATIONS
+All routines return a 0 on success, -1 on failure.  
+
+.SS \f4int v545_config_override_position_velocity(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4, int \f2fb_chnl\f4, float \f2target_position\f4, float \f2target_velocity\f4, int \f2min_counts\f4, int \f2max_counts\f4, float \f2min_pos\f4, float \f2max_pos\f4, int \f2signed_flag\f4)\f1
+Configure the position and velocity of an output channel when the override is tripped.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2ob_chnl\f1
+.br
+is the override block channel 12-15.  Channel 15 is the highest priority, channel 12 is the lowest priority.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4float \f2target_position\f1
+.br
+specifies the target position when an override block is initiated.  For LVDT/RVDTs, this is relative to the min/max positions;
+for Synchro/Resolvers it is in degrees between the min/max positions.
+.TP
+\f4float \f2target_velocity\f1
+.br
+specifies the target velocity when an override block is initiated.  For LVDT/RVDTs, it is whatever the linear measurement is
+(inches, mm, etc) per second.  For Synchro/Resolvers it is in degrees per second.
+.TP
+\f4int \f2min_count\f1
+.br
+.PD 0
+.TP
+\f4int \f2max_count\f1
+.br
+required for LVDT/RVDTs for output scaling.
+.PD
+.br
+.TP
+\f4float \f2min_pos\f1
+.br
+.PD 0
+.TP
+\f4float \f2max_pos\f1
+.br
+required for output scaling.
+.PD
+.TP
+\f4int \f2signed_flag\f1
+.br
+0 = unsigned -- range = 0 to 359 deg, 1 = signed 179 to -179 deg.
+
+.SS \f4int v545_config_override_switch(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4, int \f2swin_mask\f4)\f1
+Configure a manual switch closure to trip an override condition.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2ob_chnl\f1
+.br
+is the override block channel 12-15.  Channel 15 is the highest priority, channel 12 is the lowest priority.
+.TP
+\f4int \f2swin_mask\f1
+.br
+specifies which switch input to trigger an override block
+.nf
+.in +5
+swin_mask       switch          J3 pin
+---------       ------          ------
+\f20x1\f1             swin0           2
+\f20x2\f1             swin1           3
+\f20x4\f1             swin2           4
+\f20x8\f1             swin3           5
+.in -5
+.fi
+
+.SS \f4int v545_config_override_watchdog(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4, float \f2watchdog_time\f4)\f1
+Configure a watchdog time to (if not updated within that time) trip and override condition.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2ob_chnl\f1
+.br
+is the override block channel 12-15.  Channel 15 is the highest priority, channel 12 is the lowest priority.
+.TP
+\f4float \f2watchdog_time\f1
+.br
+time in seconds to load into the watchdog countdown register; whereupon if it reaches 0, and override condition will be met. 
+
+.SS \f4int v545_config_override_swtrigger(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4)\f1
+Configure an override block to be triggered via software (used for testing).
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2ob_chnl\f1
+.br
+is the override block channel 12-15.  Channel 15 is the highest priority, channel 12 is the lowest priority.  This must be done
+prior to manually trigger an override condition by calling:
+.br
+\f4int\ v545_set_override_swtrigger(V545_REGS\ *\f2pb\f4,\ int\ \f2ob_chnl\f4)\f1. 
+
+.SS \f4int v545_set_override_swtrigger(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4)\f1
+Execute a software trigger of an override block.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2ob_chnl\f1
+.br
+is the override block channel 12-15.  Channel 15 is the highest priority, channel 12 is the lowest priority.
+
+.SH CLEANUP
+All routines return a 0 on success, -1 on failure.  
+
+.SS \f4int v545_clear_function_block(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4)\f1
+Clear the specified function block.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+
+.SS \f4int v545_clear_function_blocks(V545_REGS *\f2pb\f4)\f1
+Clear all the function blocks.
+.br
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+
+.SS \f4int v545_clear_active_override(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4)\f1
+Clear an active override condition on specified override block.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2ob_chnl\f1
+.br
+is the override block channel 12-15.
+
+.SS \f4int v545_clear_override_block(V545_REGS *\f2pb\f4, int \f2ob_chnl\f4)\f1
+Clear the specified override block.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2ob_chnl\f1
+.br
+is the override block channel 12-15.
+
+.SS \f4int v545_clear_override_blocks(V545_REGS *\f2pb\f4)\f1
+Clear all the override blocks.
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+
+.SH ROUTINES USED INTERNALLY
+All routines return a 0 on success, -1 on failure.  
+
+.SS \f4int v545_write_function_code(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4, unsigned short \f2function_code\f4)\f1
+Writes function code to function block channel
+.TP
+\f4V545_REGS *\f2pb\f1
+.br
+virtual address pointer to the V545 board.
+.TP
+\f4int \f2fb_chnl\f1
+.br
+is the function block channel 0-11.
+.TP
+\f4unsigned short \f2function_code\f1
+.br
+The following are valid function codes and values for function blocks.
+.nf
+.in +5
+\f2V545_FUNC_CODE_NONE                          \f10
+\f2V545_FUNC_CODE_LVDT_RVDT_INPUT               \f13
+\f2V545_FUNC_CODE_LVDT_RVDT_OUTPUT              \f14
+\f2V545_FUNC_CODE_SYNCHRO_RESOLVER_INPUT        \f15
+\f2V545_FUNC_CODE_SYNCHRO_RESOLVER_OUTPUT       \f16
+.in -5
+.fi
+
+The following are valid override codes and values for override blocks.
+
+.nf
+.in +5
+\f2V545_OVERRIDE_FUNC_CODE_UNUSED               \f10x0000
+\f2V545_OVERRIDE_FUNC_CODE_WATCHDOG             \f10x0011
+\f2V545_OVERRIDE_FUNC_CODE_SWITCH               \f10x0012
+.in -5
+.fi
+
+.SS \f4int v545_config_dds(V545_REGS *\f2pb\f4, int \f2dds_chnl\f4, int \f2dds_freq\f4)\f1
+Set DDS channel to frequency provided in Hz.
+.br
+
+.SS \f4int v545_config_ccb(V545_REGS *\f2pb\f4, int \f2EX_coil\f4, int \f2dds_target_coil\f4)\f1
+For internal excitation, associate DDS channel with excitation (0-23) coil (transformer).
+.br
+
+.SS \f4int v545_is_a_valid_function_block_chnl(int \f2fb_chnl\f4)\f1
+Verify \f2fb_chnl\f1 is in the range of 0-11.
+.br
+
+.SS \f4int v545_is_a_valid_override_block_chnl(int \f2ob_chnl\f4)\f1
+Verify \f2ob_chnl\f1 is in the range of 12-15.
+.br
+
+.SS \f4int v545_override_get_regfile_index(V545_REGS *\f2pb\f4, int *\f2regfile_index\f4)\f1
+Return the index of a word pair for the next available regfile index (0-31).  The regfile is located at offset 0x80, and is 64
+short words long.
+.br
+
+.SS \f4int v545_get_fb_type(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4)\f1
+For the specified \f2fb_chnl\f1, return the function code.
+.br
+
+.SH VENDOR MANUAL
+The manuals are available at http://www.highlandtechnology.com/downloads/manuals.shtml.  You will need to register and login to
+download the manual pdf.
+
+
+.SH SEE ALSO
+none
+
+.SH CAVEATS
+none
+
+.SH AUTHOR
+Dean W. Anneser

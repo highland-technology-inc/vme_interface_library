@@ -1,0 +1,587 @@
+\" -*- nroff -*-
+
+\" v450_utils -- V450 library interface
+\"
+\" This program is free software; you can redistribute it and/or modify
+\" it under the terms of the GNU General Public License as published by
+\" the Free Software Foundation; either version 2 of the License, or (at
+\" your option) any later version.
+\"
+\" This program is distributed in the hope that it will be useful, but
+\" WITHOUT ANY WARRANTY; without even the implied warranty of
+\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+\" General Public License for more details.
+\"
+\" You should have received a copy of the GNU General Public License
+\" along with this program. If not, see <http://www.gnu.org/licenses/>.
+\"
+\" Author: Dean W. Anneser
+\" Company: RTLinux Solutions LLC for Highland Technology, Inc.
+\" Date: Mon Aug 09 09:10:09 2021
+
+.TH v470_utils 3 "user level utility library for VME V470 card"
+
+.SH NAME
+.nf
+\f4v470_utils\f1 -- collection of routines to interface with the VME V470 16 channel D/A card.
+.fi
+
+.SH SYNOPSIS
+.nf
+\f4#include \f2"v470_utils_proto.h"\f1
+\f4#include \f2"v470_regs_sdef.h"\f1
+.br
+.sp
+
+.SS READ/WRITE REGISTERS
+\f4unsigned short v470_read_vximfr(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_read_vxitype(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_read_serial(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_read_romid(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_read_romrev(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_read_cflags(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_read_rflags(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_read_relays(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_write_relays(V470_REGS *\f2pb\f4, unsigned short \f2relays\f4)\f1
+.br
+\f4unsigned short v470_read_uled(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_write_uled(V470_REGS *\f2pb\f4, unsigned short \f2uled\f4)\f1
+.br
+\f4unsigned short v470_read_mode(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_write_mode(V470_REGS *\f2pb\f4, unsigned short \f2mode\f4)\f1
+.br
+\f4unsigned short v470_read_calid(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_read_biss(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_read_ycal(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_read_dcal(V470_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v470_read_bistblk(V470_REGS *\f2pb\f4, int \f2blknum\f4, unsigned short *\f2bistblk\f4)\f1 // bist block needs to point to an array of 6 unsigned short
+.br
+\f4char *v470_get_cal_date(V470_REGS *\f2pb\f4)\f1
+.br
+\f4int v470_read_reg(V470_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned short *\f2reg_value\f4)\f1
+.br
+\f4int v470_read_interlock_reg(V470_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned int *\f2reg_value\f4)\f1
+.br
+
+.SS MACRO EXECUTION
+\f4int v470_execute_macro(V470_REGS *\f2pb\f4, unsigned short \f2macro\f4, unsigned short *\f2params\f4, unsigned short *\f2arg\f4)\f1
+.br
+
+.SS CONFIGURATION
+\f4int v470_config_rtd_type(V470_REGS *\f2pb\f4, char \f2rtd_id\f4, int \f2type\f4)\f1
+.br
+\f4int v470_config_analog_chnl(V470_REGS *\f2pb\f4, unsigned int \f2chnl_num\f4, unsigned int \f2rn_code\f4)\f1
+.br
+\f4int v470_config_tc_chnl(V470_REGS *\f2pb\f4, unsigned int \f2chnl_num\f4, unsigned int \f2rs_code\f4, unsigned int \f2rn_code\f4)\f1
+.br
+
+.SS READ/WRITE OPERATIONS
+\f4int v470_read_rtd_type(V470_REGS *\f2pb\f4, char \f2rtd_id\f4, int *\f2ptype\f4)\f1
+.br
+\f4int v470_read_rtd_temp(V470_REGS *\f2pb\f4, char \f2rtd_id\f4, char \f2deg_spec\f4, float *\f2ptemp\f4)\f1
+.br
+\f4int v470_read_rtd_ohms(V470_REGS *\f2pb\f4, char \f2rtd_id\f4, float *\f2pohms\f4)\f1
+.br
+\f4int v470_write_fake_rtd_temp(V470_REGS *\f2pb\f4, char \f2rtd_id\f4, char \f2deg_spec\f4, float \f2temp\f4)\f1
+.br
+\f4int v470_write_analog_chnl(V470_REGS *\f2pb\f4, int \f2chnl_num\f4, float \f2volts_data\f4)\f1
+.br
+\f4int v470_write_tc_chnl(V470_REGS *\f2pb\f4, int \f2chnl_num\f4, char \f2deg_spec\f4, float \f2temp\f4)\f1
+.br
+\f4int v470_chnl_to_rn_code(V470_REGS *\f2pb\f4, int \f2chnl\f4, unsigned short *\f2prn_code\f4)\f1
+.br
+\f4int v470_rn_code_to_range(int \f2rn_code\f4, float *\f2pmin\f4, float *\f2pmax\f4)\f1
+.br
+
+.SH DESCRIPTION
+The \f4v470_util\f1 library provides an easy method for a user to address functions of the Highland Technology V470 digital to
+analog converter board.  The first argument \f2pb\f1 of these routines is a virtual address pointer to the base address of the
+board.  This can be attained through the use of the \f4v120_config(1)\f1 and \f4get_vaddr_for_device(3)\f1 interface, or through
+\f4v120_open(3)\f1, \f4v120_add_vme_region(3)\f1, and \f4v120_allocate_vme(3)\f1.
+
+.TP
+\f4#include \f2"v470_utils_proto.h"\f1
+.br
+defines the prototypes for all of these calls.
+.TP
+\f4#include \f2"v470_regs_sdef.h"\f1
+.br
+defines all the register #define constants, and the register map of the board.
+
+.SS \f4unsigned short v470_read_vximfr(V470_REGS *\f2pb\f4)\f1
+Returns the value of the VXIMFR register.  Highland Technology's registered code is 0xfeee.
+
+.SS \f4unsigned short v470_read_vxitype(V470_REGS *\f2pb\f4)\f1
+Returns the value of the VXITYPE register.  These are defined in \f2vme_search_specs_stor.h\f1.
+
+.nf
+.in +5
+v210 -- VME Relay Module                                              0x56c2
+v220 -- VME 4-20mA Analog Control I/O Module                          0x56cc
+v230 -- VME Analog Input Module                                       0x56d6
+v250 -- VME Digital I/O Module                                        0x56ea
+v340 -- VME Waveform Generator Module                                 0x5744
+v344 -- VME Waveform Generator                                        0x5648
+v346 -- VME Waveform Generator                                        0x564a
+v350 -- VME Analog/Digital Function Generator                         0x574e
+v360 -- VME Tachometer Module                                         0x5758
+v365 -- VME Tachometer / Overspeed Module                             0x575d
+v370 -- VME Waveform Generator                                        0x5762
+v375 -- VME Waveform Generator                                        0x5767
+v380 -- VME Strain Gauge / Weighing Module                            0x576c
+v385 -- VME Strain Gauge / Load Cell Module                           0x5771
+v410 -- VME RTD / Resistance Input Module                             0x578a
+v420 -- VME Isolated Resistance Simulator                             0x5794
+v450 -- VME Analog Input Module                                       0x57b2
+v460 -- VME Analog Scanner Module                                     0x57bc
+v470 -- VME Analog Output and Thermocouple Simulator Module           0x57c6
+v490 -- VME Multi-range Digitizer                                     0x57da
+v545 -- VME Synchro/Resolver/LVDT/RVDT Simulation/Acquisition Module  0x5811
+.in -5
+.fi
+
+.SS \f4unsigned short v470_read_serial(V470_REGS *\f2pb\f4)\f1
+Returns the value of the SERIAL register.
+
+.SS \f4unsigned short v470_read_romid(V470_REGS *\f2pb\f4)\f1
+Returns the value of the ROMID register.
+
+.SS \f4unsigned short v470_read_romrev(V470_REGS *\f2pb\f4)\f1
+Returns the value of the ROMREV register.
+
+.SS \f4unsigned short v470_read_cflags(V470_REGS *\f2pb\f4)\f1
+Returns the value of the CFLAGS register.
+
+.SS \f4unsigned short v470_read_rflags(V470_REGS *\f2pb\f4)\f1
+Returns the value of the RFLAGS register.
+
+.SS \f4unsigned short v470_read_relays(V470_REGS *\f2pb\f4)\f1
+Returns the value of the RELAYS register.
+
+.SS \f4unsigned short v470_write_relays(V470_REGS *\f2pb\f4, unsigned short \f2relays\f4)\f1
+Writes the \f2relays\f1 into the RELAYS register -- controls calibration bus relays.
+
+.SS \f4unsigned short v470_read_uled(V470_REGS *\f2pb\f4)\f1
+Returns the value of the ULED register.
+
+.SS \f4unsigned short v470_write_uled(V470_REGS *\f2pb\f4, unsigned short \f2uled\f4)\f1
+Writes the value of \f2uled\f1 into the ULED register.
+
+.SS \f4unsigned short v470_read_mode(V470_REGS *\f2pb\f4)\f1
+Returns the value of the MODE register.
+
+.SS \f4unsigned short v470_write_mode(V470_REGS *\f2pb\f4, unsigned short \f2mode\f4)\f1
+Writes the value of \f2mode\f1 into the MODE register.
+
+.SS \f4unsigned short v470_read_calid(V470_REGS *\f2pb\f4)\f1
+Returns the value of the CALID register.
+
+.SS \f4unsigned short v470_read_biss(V470_REGS *\f2pb\f4)\f1
+Returns the value of the BISS register.
+
+.SS \f4unsigned short v470_read_ycal(V470_REGS *\f2pb\f4)\f1
+Returns the value of the YCAL register -- calibration date -- year.
+
+.SS \f4unsigned short v470_read_dcal(V470_REGS *\f2pb\f4)\f1
+Returns the value of the DCAL register -- calibration date -- MM/DD.
+
+.SS \f4unsigned short v470_read_bistblk(V470_REGS *\f2pb\f4, int \f2blknum\f4, unsigned short *\f2bistblk\f4)\f1
+Returns an array of 6 BIST block words to 6 word array pointed to by \f2bistblk\f1.  Errors are returned in six word blocks
+in registers 128-255, for a total of 21 total errors.  \f2blknum\f1 specifies which of the 21 blocks to load.
+
+.SS \f4char *v470_get_cal_date(V470_REGS *\f2pb\f4)\f1
+Returns calibration date as a string in the format of "MM/DD/YYYY".
+
+.SS \f4int v470_read_reg(V470_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned short *\f2reg_value\f4)\f1
+Returns value of register at \f2offset\f1.
+
+.SS \f4int v470_read_interlock_reg(V470_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned int *\f2reg_value\f4)\f1
+Returns 32-bit value of interlocked registers at offset 44-55.
+
+Example:
+
+Read channel loopback voltage from BIVH:BIVL registers:
+
+.nf
+.in +5
+#define LSB 0.00000000745058L
+
+double readbackvolts;
+int bistloopbackcounts;
+
+if (v470_read_interlock_reg(pb, 0x6c, (unsigned int *)&bistloopbackcounts) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+readbackvolts = (double)bistloopbackcounts * LSB * 16.0L
+
+.SS \f4int \f2v470_execute_macro(V470_REGS *\f2pb\f4, unsigned short \f2macro\f4, unsigned short *\f2params\f4, unsigned short *\f2arg\f4)\f1
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2macro\f1
+.br
+supports the following macros as defined in the manual and \f2v470_regs_sdef.h\f1.
+
+.nf
+.in +5
+#define V470_MACRO_NOOP                 0x0000
+#define V470_MACRO_SETALL_TYPE_J        0x8401  // set all channels to Type J thermocouple at 16.7 Hz, using the onboard reference junction
+#define V470_MACRO_SETALL_TYPE_K        0x8402  // set all channels to Type K thermocouple at 16.7 Hz, using the onboard reference junction
+#define V470_MACRO_SETALL_TYPE_E        0x8403  // set all channels to Type E thermocouple at 16.7 Hz, using the onboard reference junction
+#define V470_MACRO_SETALL_TYPE_T        0x8404  // set all channels to Type T thermocouple at 16.7 Hz, using the onboard reference junction
+#define V470_MACRO_SETALL_12_5_V        0x8405  // set all channels to +/- 12.5V output
+#define V470_MACRO_SETALL_80_MV         0x8406  // set all channels to +/- 80mV
+#define V470_MACRO_SETALL_25_MV         0x8407  // set all channels to +/- 25VmV
+#define V470_MACRO_BIST_ALL             0x8410  // BIST all
+#define V470_MACRO_BIST_ONE_CHNL        0x8411  // BIST one channel
+#define V470_MACRO_HARD_REBOOT          0x8420  // hard reboot -- reloads PFGSs, restarts code, disappears from bus for 4 seconds
+#define V470_MACRO_SOFT_REBOOT          0x8421  // soft reboot -- remains on bus
+.in -5
+.fi
+
+.TP
+\f2params\f1
+.br
+used as a value or bitmask in the following macros:
+
+.nf
+.in +5
+V470_MACRO_BIST_ONE_CHNL
+.in -5
+.fi
+
+.TP
+\f2arg\f1
+.br
+presently unused -- just enter 0.
+
+Example 1:
+
+BIST channel 2.
+
+.nf
+.in +5
+unsigned short param0 = 2;
+
+if (v470_execute_macro(pb, V470_MACRO_BIST_ONE_CHNL, &param0, 0) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi
+
+Example 2:
+
+Reset the board.
+
+.nf
+.in +5
+if (v470_execute_macro(pb, V470_MACRO_HARD_REBOOT, 0, 0) == -1)
+  {
+    ... print error message ...
+    exit(1);
+  }
+.in -5
+.fi
+
+.SS \f4int v470_config_rtd_type(V470_REGS *\f2pb\f4, char \f2rtd_id\f4, int \f2type\f4)\f1
+Sets the type of the RTD -- either 100 or 1000 ohm platinum.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2rtd_id\f1
+.br
+is 'a', 'b', 'c', or 'd'.
+.TP
+\f2type\f1
+.br
+is one of the following (from v470_utils/v470_regs_sdef.h):
+
+.nf
+.in +5
+// RTD types
+
+#define V470_RTD_TYPE_UNUSED            0
+#define V470_RTD_TYPE_100_OHM_PT        1
+#define V470_RTD_TYPE_1000_OHM_PT       2
+.in -5
+.fi
+
+.SS \f4int v470_config_analog_chnl(V470_REGS *\f2pb\f4, unsigned int \f2chnl_num\f4, unsigned int \f2rn_code\f4)\f1
+Configures the analog channel range.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2chnl_num\f1
+.br
+the valid range for \f2chnl_num\f1 is 0-15.
+.TP
+\f2rn_code\f1.
+.br
+is one of the following (from v470_utils/v470_regs_sdef.h):
+
+.nf
+.in +5
+#define V470_RN_CODE_OFF                0
+#define V470_RN_CODE_25_MV              1       // +/-25mv
+#define V470_RN_CODE_50_MV              2       // +/-50mv
+#define V470_RN_CODE_80_MV              3       // +/-80mv
+#define V470_RN_CODE_125_MV             4       // +/-125mv
+#define V470_RN_CODE_250_MV             5       // +/-250mv
+#define V470_RN_CODE_500_MV             6       // +/-500mv
+#define V470_RN_CODE_1_25_V             7       // +/-1.25v
+#define V470_RN_CODE_2_5_V              8       // +/-2.5v
+#define V470_RN_CODE_5_V                9       // +/-5.0v
+#define V470_RN_CODE_12_5_V             10      // +/-12.5v
+.in -5
+.fi
+
+\f4int v470_config_tc_chnl(V470_REGS *\f2pb\f4, unsigned int \f2chnl_num\f4, unsigned int \f2rs_code\f4, unsigned int \f2rn_code\f4)\f1
+Configures a thermocouple channel.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2chnl_num\f1
+.br
+the valid range for \f2chnl_num\f1 is 0-15.
+.TP
+\f2rs_code\f1
+.br
+identifies which RTD to use (from v470_utils/v470_regs_sdef.h):
+
+.nf
+.in +5
+#define V470_RS_CODE_RTD_A              0
+#define V470_RS_CODE_RTD_B              1
+#define V470_RS_CODE_RTD_C              2
+#define V470_RS_CODE_RTD_D              3
+#define V470_RS_CODE_RTD_INTERNAL       4
+#define V470_RS_CODE_RTD_FAKE1          5
+#define V470_RS_CODE_RTD_FAKE2          6
+#define V470_RS_CODE_RTD_NONE           7
+.in -5
+.fi
+.TP
+\f2rn_code\f1
+.br
+identifies the thermocouple type for \f2chnl_num\f1 (from v470_utils/v470_regs_sdef.h):
+
+.nf
+.in +5
+#define V470_RN_CODE_TYPE_J             16      // -210 to 1200 degC
+#define V470_RN_CODE_TYPE_K             17      // -270 to 1372 degC
+#define V470_RN_CODE_TYPE_E             18      // -270 to 1000 degC
+#define V470_RN_CODE_TYPE_T             19      // -270 to 400 degC
+#define V470_RN_CODE_TYPE_R             20      // -50 to 1768 degC
+#define V470_RN_CODE_TYPE_S             21      // -50 to 1768 degC
+#define V470_RN_CODE_TYPE_B             22      // 0 to 1820 degC
+#define V470_RN_CODE_TYPE_N             23      // -270 to 1300 degC
+.in -5
+.fi
+
+\f4int v470_read_rtd_type(V470_REGS *\f2pb\f4, char \f2rtd_id\f4, int *\f2ptype\f4)\f1
+Reads the RTD type for \f2rtd_id\f1 a-d, and loads it into \f2ptype\f1
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2rtd_id\f1
+.br
+is 'a', 'b', 'c', or 'd'.
+.TP
+\f2ptype\f1
+.br
+points to an integer that will receive the following value:
+
+.nf
+.in +5
+#define V470_RTD_TYPE_UNUSED		0
+#define V470_RTD_TYPE_100_OHM_PT	1
+#define V470_RTD_TYPE_1000_OHM_PT	2
+.in -5
+.fi
+
+\f4int v470_read_rtd_temp(V470_REGS *\f2pb\f4, char \f2rtd_id\f4, char \f2deg_spec\f4, float *\f2ptemp\f4)\f1
+Reads the RTD temperatures.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2rtd_id\f1
+.br
+is 'a', 'b', 'c', 'd', 'r', '1', or '2'.
+.TP
+\f2deg_spec\f1
+.br
+is 'C', 'F', 'K', or 'R'.
+.TP
+\f2ptemp\f1
+.br
+pointer to a floating point parameter to receive temperature.
+
+.SS \f4int v470_read_rtd_ohms(V470_REGS *\f2pb\f4, char \f2rtd_id\f4, float *\f2pohms\f4)\f1
+Reads the RTD ohms for 'a', 'b', 'c', 'd', and 't' (test resistor).
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2rtd_id\f1
+.br
+is 'a', 'b', 'c', 'd', or 't'.
+.TP
+\f2pohms\f1
+.br
+pointer to a floating point parameter to receive resistance.
+
+.SS \f4int v470_write_fake_rtd_temp(V470_REGS *\f2pb\f4, char \f2rtd_id\f4, char \f2deg_spec\f4, float \f2temp\f4)\f1
+Write temperatures into fake RTDs '1' and '2'.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2rtd_id\f1
+.br
+is '1' or '2'.
+.TP
+\f2deg_spec\f1
+.br
+is 'C', 'F', 'K', or 'R'.
+
+.SS \f4int v470_write_analog_chnl(V470_REGS *\f2pb\f4, int \f2chnl_num\f4, float \f2volts_data\f4)\f1
+Writes volts to channels 0-15.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2chnl_num\f1
+.br
+the valid range for \f2chnl_num\f1 is 0-15.
+.TP
+\f2volts_data\f1
+.br
+contains voltage value to write out to \f2chnl_num\f1.
+
+.SS \f4int v470_write_tc_chnl(V470_REGS *\f2pb\f4, int \f2chnl_num\f4, char \f2deg_spec\f4, float \f2temp\f4)\f1
+Write termocouple temperature reading to T/C channels.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2chnl_num\f1
+.br
+the valid range for \f2chnl_num\f1 is 0-15.
+.TP
+\f2deg_spec\f1
+.br
+is 'C', 'F', 'K', or 'R'.
+.TP
+\f2temp\f1
+.br
+temperature to write out to \f2chnl_num\f1.
+
+.SS \f4int v470_chnl_to_rn_code(V470_REGS *\f2pb\f4, int \f2chnl_num\f4, unsigned short *\f2prn_code\f4)\f1
+Retrieves the RN code for a specified channel.
+.TP
+\f2pb\f1
+.br
+virtual address pointer to base of board.
+.TP
+\f2chnl_num\f1
+.br
+the valid range for \f2chnl_num\f1 is 0-15.
+.TP
+\f2prn_code\f1
+.br
+pointer to the parameter to receive the RN code for the specified channel.  The RN codes (thermocouple types) are
+defined in v470_utils/v470_regs_sdef.h.
+
+.nf
+.in +5
+#define V470_RN_CODE_TYPE_J             16      // -210 to 1200 degC
+#define V470_RN_CODE_TYPE_K             17      // -270 to 1372 degC
+#define V470_RN_CODE_TYPE_E             18      // -270 to 1000 degC
+#define V470_RN_CODE_TYPE_T             19      // -270 to 400 degC
+#define V470_RN_CODE_TYPE_R             20      // -50 to 1768 degC
+#define V470_RN_CODE_TYPE_S             21      // -50 to 1768 degC
+#define V470_RN_CODE_TYPE_B             22      // 0 to 1820 degC
+#define V470_RN_CODE_TYPE_N             23      // -270 to 1300 degC
+.in -5
+.fi
+
+.SS \f4int v470_rn_code_to_range(int \f2rn_code\f4, float *\f2pmin\f4, float *\f2pmax\f4)\f1
+Retrieves the min and max values for a specified \f2rn_code\f1.
+.TP
+\f2rn_code\f1
+.br
+identifies the range code for the specified channel (from v470_utils/v470_regs_sdef.h):
+
+.nf
+.in +5
+#define V470_RN_CODE_25_MV		1	// +/-25mv
+#define V470_RN_CODE_50_MV		2       // +/-50mv
+#define V470_RN_CODE_80_MV		3       // +/-80mv
+#define V470_RN_CODE_125_MV		4       // +/-125mv
+#define V470_RN_CODE_250_MV		5       // +/-250mv
+#define V470_RN_CODE_500_MV		6       // +/-500mv
+#define V470_RN_CODE_1_25_V		7       // +/-1.25v
+#define V470_RN_CODE_2_5_V		8       // +/-2.5v
+#define V470_RN_CODE_5_V		9       // +/-5.0v
+#define V470_RN_CODE_12_5_V		10	// +/-12.5v
+.in -5
+.fi
+
+.TP
+\f2pmin\f1
+.br
+points to the floating point parameter to receive the minimum value.
+.TP
+\f2pmax\f1
+.br
+points to the floating point parameter to receive the maximum value.
+
+Example:
+
+Get min/max ranges for RN code V470_RN_CODE_5_V.  "min" will contain -5 and "max" will contain 5.
+
+.nf
+.in +5
+float min, max;
+
+if (v470_rn_code_to_range(V470_RN_CODE_5_V, &min, &max) == -1)
+  {
+    ... print error message ...
+  }
+.in -5
+.fi

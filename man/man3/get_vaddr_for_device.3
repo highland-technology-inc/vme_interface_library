@@ -1,0 +1,113 @@
+\" -*- nroff -*-
+
+\" get virtual address for board by name
+\"
+\" This program is free software; you can redistribute it and/or modify
+\" it under the terms of the GNU General Public License as published by
+\" the Free Software Foundation; either version 2 of the License, or (at
+\" your option) any later version.
+\"
+\" This program is distributed in the hope that it will be useful, but
+\" WITHOUT ANY WARRANTY; without even the implied warranty of
+\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+\" General Public License for more details.
+\"
+\" You should have received a copy of the GNU General Public License
+\" along with this program. If not, see <http://www.gnu.org/licenses/>.
+\"
+\" Author: Dean W. Anneser
+\" Company: RTLinux Solutions LLC for Highland Technology, Inc.
+\" Date: 30 Apr 2021
+
+.TH get_vaddr_for_device 3 "get virtual address for board by name"
+
+.SH NAME
+\f4get_vaddr_for_device\f1 - get virtual address for board by name
+
+.SH SYNOPSIS
+.nf
+\f4void *get_vaddr_for_device(char *\f2conf_file, \f4char *\f2board_spec\f4)\f1
+.fi
+
+.SH DESCRIPTION
+The \f4get_vaddr_for_device()\f1 routine returns a virtual address for a VME board specified with \f2board_spec\f1.  The
+\f2board_spec\f1 is of the format: "\f2device_name[\f1repeater_num\f2][\f1board_num\f2]\f1".  For example, the third v450
+board (starting from 0), in chassis/repeater/controller number 0 would be expressed as: "\f2v450[\f10\f2][\f12\f2]\f1".
+
+This routine is used in conjuction with the \f4v120_config\f1 utility.  This utility reads a V120/VME configuration, configures
+user specified A16/A24/A32 address spaces, probes for VME devices listed, and writes this to an output configuration file.  This 
+filename is specified as \f2conf_file\f1 in the call to this routine.  In the output \f2conf_file\f1, the V120 devices are
+listed as online or offline, and for each address space, have a start and end mapping register specified.  The VME devices are
+listed as online or offline, and identify which V120 repeater and address space they are mapped through. 
+
+The device name is one of the Highland Technology device names listed in \f2vme_search_specs_stor.h\f1 (structure definition is
+in \f2vme_search_specs_sdef.h\f1).  Note, this file could be expanded by the user to include other VME devices. 
+
+.SH DEVICE TYPES
+.SS REPEATER
+The only supported repeater type presently, is the Highland Technology V120 "v120".
+.SS VME
+The following is the list of Highland Technology VME boards presently supported by this interface:
+
+.nf
+.in +5
+\f2v210\f1 -- VME Relay Module
+\f2v220\f1 -- VME 4-20mA Analog Control I/O Module
+\f2v230\f1 -- VME Analog Input Module
+\f2v250\f1 -- VME Digital I/O Module
+\f2v340\f1 -- VME Waveform Generator Module
+\f2v344\f1 -- VME Waveform Generator
+\f2v346\f1 -- VME Waveform Generator
+\f2v350\f1 -- VME Analog/Digital Function Generator
+\f2v360\f1 -- VME Tachometer Module
+\f2v365\f1 -- VME Tachometer / Overspeed Module
+\f2v370\f1 -- VME Waveform Generator
+\f2v375\f1 -- VME Waveform Generator
+\f2v380\f1 -- VME Strain Gauge / Weighing Module
+\f2v385\f1 -- VME Strain Gauge / Load Cell Module
+\f2v410\f1 -- VME RTD / Resistance Input Module
+\f2v420\f1 -- VME Isolated Resistance Simulator
+\f2v450\f1 -- VME Analog Input Module
+\f2v460\f1 -- VME Analog Scanner Module
+\f2v470\f1 -- VME Analog Output and Thermocouple Simulator Module
+\f2v490\f1 -- VME Multi-range Digitizer
+\f2v545\f1 -- VME Synchro/Resolver/LVDT/RVDT Simulation/Acquisition Module
+.in -5
+.fi
+
+.SH EXAMPLES
+For the following output config file:
+
+.nf
+.in +5
+\f4repeater \f2v120[\f10\f2] \f4-a16 \f20xffff0000 \f4-s16 \f20x10000 \f4-sp16 \f2260 \f4-ep16 \f2261 \f4-a24 \f20xff000000 \f4-s24 \f20x100000 \f4-sp24 \f2196 \f4-ep24 \f2259 \f4-a32 \f20xe0000000 \f4-s32 \f20x200000 \f4-sp32 \f268 \f4-ep32 \f2195 \f4-o \f2true\f1
+\f4repeater \f2v120[\f11\f2] \f4-a16 \f20xffff8000 \f4-s16 \f20x8000 \f4-a24 \f20xff100000 \f4-s24 \f20x100000 \f4-a32 \f20xe0200000 \f4-s32 \f20x200000 \f4-o \f2false\f1
+\f4vmedevice \f2v545[\f10\f2][\f10\f2] \f4-base \f20xffff0000 \f4-a \f216 \f4-o \f2true         \f1# VME Synchro/Resolver/LVDT/RVDT Simulation/Acquisition Module
+\f4vmedevice \f2v470[\f10\f2][\f10\f2] \f4-base \f20xffff0800 \f4-a \f216 \f4-o \f2true         \f1# VME Analog Output and Thermocouple Simulator Module
+\f4vmedevice \f2v450[\f10\f2][\f10\f2] \f4-base \f20xffff0a00 \f4-a \f216 \f4-o \f2true         \f1# VME Analog Input Module
+\f4vmedevice \f2v545[\f10\f2][\f11\f2] \f4-base \f20xffff1000 \f4-a \f216 \f4-o \f2false        \f1# VME Relay Module
+\f4vmedevice \f2v545[\f10\f2][\f12\f2] \f4-base \f20xffff1800 \f4-a \f216 \f4-o \f2false        \f1# VME Relay Module
+.in -5
+.fi
+
+The call \f4get_vaddr_for_device(\f2"conf_file"\f4, \f2"v450"\f4,\f2 0\f4)\f1, will construct a "v450[0]" string to lookup in \f4conf_file\f1, and then get the associated "v120[0]" device and A16 address space, and use the starting A16 page of \f2260\f1 and ending page of \f2261\f1 to map to that address space, and return a virtual address to the base address of the VME board.
+
+.SH ERRORS
+none
+
+.SH VENDOR MANUALS
+.nf
+http://www.highlandtechnology.com/categories/vme.shtml
+.fi
+
+.SH SEE ALSO
+\f4v120_config(1)\f1
+
+.SH CAVEATS
+none
+
+.SH RESTRICTIONS
+Up to four V120 devices supported per system.
+
+.SH AUTHORS
+Dean W. Anneser
