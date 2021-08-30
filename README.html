@@ -131,6 +131,7 @@ vmedevice v450[0][0] -base 0xffff0a00 -a 16 -o true # VME Analog Input and Therm
     // flash operations
     v545_sprintf_checksum_flash()
     v545_load_flash()
+    v545_verify_flash()
 
     // macro operation
     v545_execute_macro()
@@ -180,6 +181,22 @@ vmedevice v450[0][0] -base 0xffff0a00 -a 16 -o true # VME Analog Input and Therm
     v545_override_get_regfile_index()
     v545_get_fb_type()
 </code></pre>
+<h2>Example user code</h2>
+<p>The <code>vme_interface_library/user</code> directory presently contains three directories:</p>
+<ol>
+<li>v450</li>
+<li>v470</li>
+<li>v545</li>
+</ol>
+<p>The <code>v470</code> directory contains example code that write to 8 channels as a D/A and another 8 channels as a T/C simulator.  The <code>v450</code> directory contains example code that read 8 channels as a A/D and another 8 channels as T/C inputs.  This requires two DB25 cables to loopback the V470 P1 -&gt; V450 P1, and V470 P2 -&gt; V450 P2.</p>
+<p>The <code>v545</code> directory contains several loopback examples that requires a DB25 cable to connect the P1 and P2 connector.</p>
+<ol>
+<li>LVDT simulation looped back for LVDT measurement</li>
+<li>RESOLVER simulation looped back for RESOLVER measurement</li>
+<li>SYNCHRO simulation looped back for SYNCHRO measurement</li>
+<li>real SYNCHRO measurement (no loopback cable)</li>
+<li>reflash and flash load verification</li>
+</ol>
 <p>&nbsp;</p>
 
 </body>

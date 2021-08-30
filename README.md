@@ -157,6 +157,7 @@ These functions are all described in detail in the v545_utils(3) manpage.
     // flash operations
     v545_sprintf_checksum_flash()
     v545_load_flash()
+    v545_verify_flash()
 
     // macro operation
     v545_execute_macro()
@@ -206,4 +207,23 @@ These functions are all described in detail in the v545_utils(3) manpage.
     v545_override_get_regfile_index()
     v545_get_fb_type()
 ```
+
+## Example user code
+
+The `vme_interface_library/user` directory presently contains three directories:
+
+1. v450
+2. v470
+3. v545
+
+The `v470` directory contains example code that write to 8 channels as a D/A and another 8 channels as a T/C simulator.  The `v450` directory contains example code that read 8 channels as a A/D and another 8 channels as T/C inputs.  This requires two DB25 cables to loopback the V470 P1 -> V450 P1, and V470 P2 -> V450 P2.
+
+The `v545` directory contains several loopback examples that requires a DB25 cable to connect the P1 and P2 connector.
+
+1. LVDT simulation looped back for LVDT measurement
+2. RESOLVER simulation looped back for RESOLVER measurement
+3. SYNCHRO simulation looped back for SYNCHRO measurement
+4. real SYNCHRO measurement (no loopback cable)
+5. reflash and flash load verification
+
 <p>&nbsp;</p>
