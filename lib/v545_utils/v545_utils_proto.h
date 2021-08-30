@@ -50,6 +50,7 @@ extern char *v545_read_xfmr_type(V545_REGS *, int);
 // flash operations
 extern char *v545_sprintf_checksum_flash(V545_REGS *);
 extern int v545_load_flash(V545_REGS *, char *, int *);
+extern int v545_verify_flash(V545_REGS *, char *, int *);
 
 // macro operation
 extern int v545_execute_macro(V545_REGS *, unsigned short, unsigned short *, unsigned short *);

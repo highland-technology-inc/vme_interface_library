@@ -42,5 +42,5 @@ INCLUDES = -I . -I ../../lib/$(PROGRAM)_utils -I ../../lib/get_vaddr_for_device 
 
 LFLAGS = -L ../../lib/$(PROGRAM)_utils -L ../../lib/get_vaddr_for_device -L ../../lib/deg_conv -L ../../lib/ht_utils -L ../../lib/misc_math_utils -L ../../lib/parse_args -L ../../lib/parse_options -L ../../lib/is_a_utils -L ../../lib/read_line -L $(V120_CLT_DIR)/libV120/.libs
 
-LIBS = -l$(PROGRAM)_utils -lget_vaddr_for_device -ldeg_conv -lht_utils -lmisc_math_utils -lparse_options -lparse_args -lis_a_utils -lread_line -lV120 -lm
+LIBS = -l$(PROGRAM)_utils -lget_vaddr_for_device -ldeg_conv -lht_utils -lmisc_math_utils -lparse_options -lparse_args -lis_a_utils -lread_line -lV120 -lm -lpthread
 

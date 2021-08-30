@@ -75,6 +75,8 @@
 \f4char *v545_sprintf_checksum_flash(V545_REGS *\f2pb\f4)\f1
 .br
 \f4int v545_load_flash(V545_REGS *\f2pb\f4, char *\f2flash_filename\f4, int *\f2percent_complete\f4)\f1
+.br
+\f4int v545_verify_flash(V545_REGS *\f2pb\f4, char *\f2flash_filename\f4, int *\f2percent_complete\f4)\f1
 
 .SS MACRO EXECUTION
 \f4int v545_execute_macro(V545_REGS *\f2pb\f4, unsigned short \f2macro\f4, unsigned short *\f2params\f4, unsigned short *\f2arg\f4)\f1
@@ -558,6 +560,10 @@ Returns string containing flash status.
 
 .SS \f4int v545_load_flash(V545_REGS *\f2pb\f4, char *\f2flash_filename\f4, int *\f2percent_complete\f4)\f1
 Loads flash with \f2flash_filename\f1, and optionally loads the percent complete into \f2percent_complete\f1 parameter.  If no
+percent complete is desired, us a zero (0) as the third argument.
+
+.SS \f4int v545_verify_flash(V545_REGS *\f2pb\f4, char *\f2flash_filename\f4, int *\f2percent_complete\f4)\f1
+Verifies flash with \f2flash_filename\f1, and optionally loads the percent complete into \f2percent_complete\f1 parameter.  If no
 percent complete is desired, us a zero (0) as the third argument.
 
 .SH MACRO EXECUTION

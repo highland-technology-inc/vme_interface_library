@@ -269,6 +269,14 @@ int v545_load_flash(V545_REGS *pb, char *flash_filename, int *percent_complete)
       return(-1);
     }
 
+  if (v545_execute_macro(pb, V545_MACRO_FLASH_UNLOCK, 0, 0) == -1)
+    {
+#if DEBUG == 1
+      printf("ERROR %s: execute flash unlock macro\n", __FUNCTION__);
+#endif
+      return(-1);
+    }
+
  read_next_buffer:
 
   memset((void *)buffer, 0, sizeof(buffer));
@@ -310,6 +318,74 @@ int v545_load_flash(V545_REGS *pb, char *flash_filename, int *percent_complete)
 }
 
 
+// verify flash with new flash file
+
+int v545_verify_flash(V545_REGS *pb, char *flash_filename, int *percent_complete)
+{
+  int i;
+  unsigned short buffer[V545_REGFILE_WORD_SIZE];
+  struct stat sb;               // sb.st_size == total filesize in bytes
+  int num_bytes_read;
+  unsigned short num_page = 0;
+  FILE *fp;
+
+  if (stat(flash_filename, &sb) == -1)
+    {
+#if DEBUG == 1
+      printf("ERROR %s: flash file does not exist: %s\n", __FUNCTION__, flash_filename);
+#endif
+      return(-1);
+    }
+
+  if ((fp = fopen(flash_filename, "r")) == (FILE *)0)
+    {
+#if DEBUG == 1
+      printf("ERROR %s: cannot open %s for reading\n", __FUNCTION__, flash_filename);
+#endif
+      return(-1);
+    }
+
+ read_next_buffer:
+
+  memset((void *)buffer, 0, sizeof(buffer));
+  if ((num_bytes_read = fread((void *)buffer, 1, sizeof(buffer), fp)) == 0)
+    goto end;
+
+  if (v545_execute_macro(pb, V545_MACRO_READ_FLASH, &num_page, 0) == -1)
+    {
+#if DEBUG == 1
+      printf("ERROR %s: execute flash read macro for num_page = %d failure\n", __FUNCTION__, num_page);
+#endif
+      return(-1);
+    }
+
+  for (i = 0; i < V545_REGFILE_WORD_SIZE; i++)
+    {
+      if (pb->regfile.raw_regs[i] != buffer[i])
+        {
+#if DEBUG == 1
+          printf("ERROR %s: flash differs from memory at word = %d, page = %d\n", __FUNCTION__,  i, num_page);
+#endif
+          return(-1);
+        }
+    }
+
+  if (percent_complete != (int *)0)
+    *percent_complete = (int)((((float)num_page * (float)(sizeof(buffer))) / (float)sb.st_size) * 100.0);
+
+  num_page += 1;
+  goto read_next_buffer;
+
+ end:
+
+  if (percent_complete != (int *)0)
+    *percent_complete = 100;
+
+  fclose(fp);
+  return(0);
+}
+
+
 // execute macros
 
 int v545_execute_macro(V545_REGS *pb, unsigned short macro, unsigned short *params, unsigned short *arg)
@@ -329,10 +405,10 @@ int v545_execute_macro(V545_REGS *pb, unsigned short macro, unsigned short *para
       return(0);
       
     case V545_MACRO_FLASH_UNLOCK:
-      return(ht_write_macro((unsigned short *)&pb->macro, macro, 0, 0, 1));
+      return(ht_write_macro((unsigned short *)&pb->macro, macro, 0, 0, 0));
       
     case V545_MACRO_FLASH_ERASE:
-      if (ht_write_macro((unsigned short *)&pb->macro, macro, 0, 0, 1) == -1)		// should complete in 5 secs
+      if (ht_write_macro((unsigned short *)&pb->macro, macro, 0, 0, 0) == -1)		// should complete in 5 secs
         return(-1);
       while (pb->param0 < 31)
         {

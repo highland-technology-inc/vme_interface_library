@@ -17,7 +17,7 @@
 
 include ../header.mk
 
-ALL = v545_lvdt v545_synchro v545_resolver v545_real_synchro 
+ALL = v545_lvdt v545_synchro v545_resolver v545_real_synchro v545_reflash
 
 all: $(ALL)
 
