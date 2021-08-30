@@ -207,6 +207,7 @@ These functions are all described in detail in the v545_utils(3) manpage.
     v545_override_get_regfile_index()
     v545_get_fb_type()
 ```
+---
 
 ## Example user code
 
