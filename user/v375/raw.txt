@@ -1,0 +1,15 @@
+# -*- conf -*-
+# square wave 25% duty cycle at 9v, blocksize = 64, blocknum = 0
+wavespec -t raw -bs 64 -bn 0
+0-15	9.0
+16-63	0.0
+
+# square wave 50% duty cycle at 8v, blocksize = 64, blocknum = 1
+wavespec -t raw -bs 64 -bn 1
+0-31	8.0
+32-63	0.0
+
+# square wave 75% duty cycle at 7v, blocksize = 64, blocknum = 2
+wavespec -t raw -bs 64 -bn 2
+0-47	7.0
+48-63	0.0

@@ -1,0 +1,6 @@
+# -*- conf -*-
+wavespec -t gear -bs 1024 -bn 0 -nt 12 -pb 0.0 -ph 10.0
+#	amplitude	short_tooth_number
+0	2.5		0
+1	5.0		4
+2	7.5		8

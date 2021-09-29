@@ -27,11 +27,11 @@
 .fi
 
 .SH SYNOPSIS
-.nf
+.SS INCLUDE FILES
 \f4#include \f2"v470_utils_proto.h"\f1
+.br
 \f4#include \f2"v470_regs_sdef.h"\f1
 .br
-.sp
 
 .SS READ/WRITE REGISTERS
 \f4unsigned short v470_read_vximfr(V470_REGS *\f2pb\f4)\f1
@@ -585,3 +585,17 @@ if (v470_rn_code_to_range(V470_RN_CODE_5_V, &min, &max) == -1)
   }
 .in -5
 .fi
+
+
+.SH VENDOR MANUAL
+The manuals are available at http://www.highlandtechnology.com/downloads/manuals.shtml.  You will need to register and login to
+download the manual pdf.
+
+.SH SEE ALSO
+\f4v120_config(1)\f1, \f4v120_config(1)\f1, \f2vme_interface_library/lib/470_utils/v470_regs_sdef.h\f1, \f2vme_interface_library/user/470/470.c\f1
+
+.SH CAVEATS
+none
+
+.SH AUTHOR
+Dean W. Anneser

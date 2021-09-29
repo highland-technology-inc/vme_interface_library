@@ -102,3 +102,34 @@ int return_integer_in_brackets(char *string, int *subscript)
   *subscript = bracketed_value;
   return(0);
 }
+
+
+void remove_leading_whitespace(char *string)
+{
+  int i;
+  char *p = string;
+
+  while (isspace(*p))
+    p++;
+
+  i = strlen(p);
+  memmove(string, p, i);
+  string[i] = '\0';
+  return;
+}
+
+
+int is_a_comment(char *string)
+{
+  char *p = string;
+
+  while (isspace(*p))
+    p++;
+
+  if (*p == '#')
+    return(1);
+
+  return(0);
+}
+
+

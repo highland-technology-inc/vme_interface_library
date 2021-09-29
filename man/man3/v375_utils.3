@@ -1,0 +1,1031 @@
+\" -*- nroff -*-
+\" This program is free software; you can redistribute it and/or modify
+\" it under the terms of the GNU General Public License as published by
+\" the Free Software Foundation; either version 2 of the License, or (at
+\" your option) any later version.
+\"
+\" This program is distributed in the hope that it will be useful, but
+\" WITHOUT ANY WARRANTY; without even the implied warranty of
+\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+\" General Public License for more details.
+\"
+\" You should have received a copy of the GNU General Public License
+\" along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+\" Author: Dean W. Anneser
+\" Company: RTLinux Solutions LLC for Highland Technologh, Inc.
+\" Date: Tue Jul 20 14:43:25 2021
+ 
+.TH v375_utils 3 
+
+.SH NAME
+.nf
+\f4v375_utils\f1 -- collection of routines to interface with the VME V375 4 channel arbitrary waveform generator card.
+.fi
+
+.SH SYNOPSIS
+.SS INCLUDE FILES
+\f4#include \f2"ht_utils_proto.h"\f1
+.br
+\f4#include \f2"misc_math_utils_proto.h"\f1
+.br
+\f4#include \f2"misc_string_utils_proto.h"\f1
+.br
+\f4#include \f2"parse_args_proto.h"\f1
+.br
+\f4#include \f2"parse_options_proto.h"\f1
+.br
+\f4#include \f2"read_line_proto.h"\f1
+.br
+\f4#include \f2"v375_utils_proto.h"\f1
+.br
+
+.SS READ/WRITE REGISTERS
+\f4unsigned short v375_read_vximfr(V375_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v375_read_vxitype(V375_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v375_read_vxistatus(V375_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v375_read_romid(V375_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v375_read_romrev(V375_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v375_read_master(V375_REGS *\f2pb\f4)\f1
+.br
+\f4int v375_set_as_master(V375_REGS *\f2pb\f4)\f1
+.br
+\f4int v375_unset_as_master(V375_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v375_read_resets(V375_REGS *\f2pb\f4)\f1
+.br
+\f4int v375_write_resets(V375_REGS *\f2pb\f4, unsigned short \f2chnl_mask\f4)\f1
+.br
+\f4unsigned short v375_read_strobe(V375_REGS *\f2pb\f4)\f1
+.br
+\f4int v375_write_strobe(V375_REGS *\f2pb\f4, unsigned short \f2chnl_mask\f4)\f1
+.br
+\f4unsigned short v375_read_vrun(V375_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned int v375_read_tpass(V375_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned int v375_read_terror(V375_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v375_read_tstop(V375_REGS *\f2pb\f4)\f1
+.br
+\f4int v375_clear_wavetable_memory(V375_REGS *\f2pb\f4, int \f2chnl\f4)\f1
+.br
+\f4int v375_load_wavetable_to_memory(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blksize\f4, int \f2blknum\f4, short *\f2pdata\f4)\f1
+.br
+\f4int v375_read_wavetable_from_memory(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blksize\f4, int \f2blknum\f4, short *\f2pdata\f4)\f1
+.br
+\f4int v375_load_waveform_start_location(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blksize\f4, int \f2blknum\f4)\f1
+.br
+\f4int v375_read_reg(V375_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned short *\f2reg_value\f4)\f1
+.br
+\f4int v375_read_interlock_reg(V375_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned int *\f2reg_value\f4)\f1
+.br
+\f4int v375_write_interlock_reg(V375_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned int \f2reg_value\f4)\f1
+.br
+
+.SS MACRO EXECUTION
+\f4int v375_execute_macro(V375_REGS *\f2pb\f4, unsigned short \f2macro\f4, unsigned short *\f2params\f4, int \f2num_params\f4, int *\f2arg\f4)\f1
+.br
+
+.SS CONFIGURATION
+\f4int v375_set_wavetable_size(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2size\f4)\f1
+.br
+\f4int v375_get_wavetable_size_and_blocks(V375_REGS *\f2pb\f4, int \f2chnl\f4, int *\f2blksize\f4, int *\f2numblks\f4)\f1
+.br
+\f4int v375_set_lowpass_filter(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2filter\f4)\f1
+.br
+\f4int v375_set_frequency(V375_REGS *\f2pb\f4, int \f2chnl\f4, float \f2freq\f4, int \f2strobe_flag\f4)\f1
+.br
+\f4int v375_set_clock_source(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2clock_source\f4)\f1
+.br
+\f4int v375_set_chnl_divisor(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2divisor\f4)\f1
+.br
+\f4int v375_set_chnl_multiplier(V375_REGS *\f2pb\f4, int \f2chnl\f4, float \f2multiplier\f4)\f1
+.br
+\f4int v375_set_chnl_dc_offset(V375_REGS *\f2pb\f4, int \f2chnl\f4, float \f2dc_offset\f4)\f1
+.br
+\f4int v375_set_chnl_phase(V375_REGS *\f2pb\f4, int \f2chnl\f4, float \f2deg_phase\f4)\f1
+.br
+\f4int v375_set_chnl_summing_mask(V375_REGS *\f2pb\f4, int \f2chnl\f4, unsigned short \f2summing_mask\f4)\f1
+.br
+\f4int v375_set_new_active_block(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2active_block\f4)\f1
+.br
+
+.SS BUILT-IN WAVEFORM CAPABILITIES
+\f4int v375_build_fourier_series_varg(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2numargs\f4, \f2...\f4)\f1
+.br
+\f4int v375_build_fourier_series(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2numargs\f4, float *\f2arglist\f4)\f1
+.br
+\f4int v375_build_gear_waveform_varg(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2num_teeth\f4, float \f2dc_baseline\f4, float \f2dc_top\f4, float \f2pulse_width\f4, int \f2numargs\f4, \f2...\f4)\f1
+.br
+\f4int v375_build_gear_waveform(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2num_teeth\f4, float \f2dc_baseline\f4, float \f2dc_top\f4, float \f2pulse_width\f4, int \f2numargs\f4, float *\f2arglist\f4)\f1
+.br
+\f4int v375_build_pulse_train_vargs(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2num_pulses\f4, float \f2dc_baseline\f4, int \f2numargs\f4, \f2...\f4)\f1
+.br
+\f4int v375_build_pulse_train(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2num_pulses\f4, float \f2dc_baseline\f4, int \f2numargs\f4, float *\f2arglist\f4)\f1
+.br
+\f4int v375_load_constant(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, float \f2dc\f4)\f1
+.br
+
+.SS LOAD WAVETABLE FILES
+\f4int v375_load_wavetable(V375_REGS *\f2pb\f4, int \f2chnl\f4, char *\f2wavefile\f4, int *\f2pblksize\f4)\f1
+.br
+
+.SS ALL IN ONE CALL
+\f4int v375_config_chnl_wavefile(V375_REGS *\f2pb\f4, int \f2chnl\f4, char *\f2wavefilename\f4, int \f2dds\f4, int \f2summing_mask\f4, int \f2low_pass_filter\f4, float *\f2freq_param\f4, float *\f2multiplier_param\f4, float *\f2phase_shift_param\f4, float *\f2dc_offset_param\f4, int *\f2divisor_param\f4, int *\f2active_block_param\f4)\f1
+
+.SH DESCRIPTION
+The V375 is a four-channel VME-module programmable arbitrary waveform generator. It is intended for use in the generation of
+relatively low-frequency waveshapes, as might be used in vibration testing, polyphase AC waveform generation, and simulation or
+excitation of rotating machinery. 
+
+The V375 generates waveforms by scanning sequential data points stored in user-loadable memory, with outputs processed by
+digital-to-analog converters, smoothing filters, and output amplifiers. The module provides full and smooth realtime control of
+waveform, frequency, amplitude, DC offset, and phase. 
+
+Principal features of the V375 include the following:
+
+.IP \(bu 2
+Four independent direct digital synthesizer (DDS) frequency sources allow smooth variation of waveform rep-rates without
+requiring waveform table reloads. Per-channel divisors allow simulation of fractional 'gear-ratio' waveshapes.
+.IP \(bu 2
+Four versatile, memory-table-driven waveform generators support waveform read/write operations concurrent with wave generation.
+.IP \(bu 2
+Up to 65,536 discrete points per waveform at up to 15-MHz point step rate.
+.IP \(bu 2
+Continuous-play (non-repetitive waveform) modes available.
+.IP \(bu 2
+32-bit frequency resolution and 16-bit amplitude resolution.
+.IP \(bu 2
+Output frequency, amplitude, phase, and DC offset are smoothly alterable in real time.
+.IP \(bu 2
+Channels may operate independently or may be synchronized within a module or across multiple modules, up to 16 modules, 64
+channels, in a single VME crate.
+.IP \(bu 2
+Output stage analog summing allows mixing of up to four generated waveforms, plus one user-supplied waveform.
+.IP \(bu 2
+Onboard microprocessor performs macro commands: complex waveshape building, pulse train generation, and test functions.
+
+.SH MAX OUTPUT FREQUENCY = f(WAVEFORM TABLE SIZE)
+
+The maximum frequency output of any waveform is inversly proportional to wavetable size -- i.e. the greater the wavetable size,
+the lower the maximum frequency.
+
+.nf
+15,000,000 points/sec
+--------------------- = maximum_freqency waveform/sec
+  N points/waveform
+.fi
+
+therefore the maximum frequency of output of a waveform in a 4096 point table is 3662 Hz.
+
+.SH DEVICE INTERFACE CALL ARGUMENTS
+.TP
+\f2pb\f1
+.br
+virtual address pointer to the base address of the board. See \f4get_vaddr_for_device(3)\f1.
+.TP
+\f2chnl\f1
+.br
+board channel number 0-3.
+.TP
+\f2chnl_mask\f1
+.br
+channel mask = 1 << \f2chnl\f1.
+.TP
+\f2blksize\f1
+.br
+can be expressed as 2^(6+n), where 0 <= n <= 10.  Valid blocksizes are 64, 128, 256, 512, 1K, 2K, 4K, 8K, 16K, 32K, 64K.
+.TP
+\f2blknum\f1
+.br
+ranges between 0-1023 based on \f2blksize\f1.  Usually specifies the block to be loaded with a waveform.
+.TP
+\f2pdata\f1
+.br
+pointer to data location that is used for wavetable reading or writing.
+.TP
+\f2offset\f1
+.br
+byte offset for reading or writing registers.
+.TP
+\f2reg_value\f1
+.br
+source of or pointer to 32-bit data for interlocked 32-bit register access.
+.TP
+\f2numblks\f1
+.br
+source of or pointer to number of blocks.
+.TP
+\f2strobe_flag\f1
+.br
+when equal to 1, start waveform output on specified channel.
+.TP
+\f2clock_source\f1
+.br
+ranges between 0-3.  By default channels 0-3 used DDS 0-3.  Having multiple output channels use the same clock source is
+important when phase synchronicity between channels is important.
+.TP
+\f2divisor\f1
+.br
+effective synthesis rate of waveform generator will be divided by \f2divisor\f1.  This is important when two or more channels
+use the same \f2clock_source\f1 (DDS) for simulating gear-ratio coupling.
+.TP
+\f2multiplier\f1
+.br
+can range between -1.0 to 1.0.  By default, the waveform amplitude is +/-10v (20vpp), therefore a multiplier value of 0.5 means
+an output of +/-5v.
+.TP
+\f2dc_offset\f1
+.br
+defines a DC offset for the channel specified.
+.TP
+\f2deg_phase\f1
+.br
+define the phase shift for the channel specified.
+.TP
+\f2summing_mask\f1
+.br
+provides for analog summing between two channels.  For example if the summing mask for channel 1 is 0x3, then the output of
+channel 1 is the combined output of channel 0 and 1.
+p.TP
+\f2active_block\f1
+.br
+provides a method for seamless (at top dead center) transition between waveforms stored in different channel memory blocks.
+
+.SH REGISTER ACCESS EXAMPLES
+.SS \f4unsigned short v375_read_vximfr(V375_REGS *\f2pb\f4)\f1
+Returns the value of VXIMFR register.  Highland Technology's registered code is 0xfeee.
+
+.SS \f4unsigned short v375_read_vxitype(V375_REGS *\f2pb\f4)\f1
+Returns the value of the VXITYPE register.  These are defined in \f2vme_search_specs_stor.h\f1.
+
+.nf
+.in +5
+v210 -- VME Relay Module                                              0x56c2
+v220 -- VME 4-20mA Analog Control I/O Module                          0x56cc
+v230 -- VME Analog Input Module                                       0x56d6
+v250 -- VME Digital I/O Module                                        0x56ea
+v340 -- VME Waveform Generator Module                                 0x5744
+v344 -- VME Waveform Generator                                        0x5648
+v346 -- VME Waveform Generator                                        0x564a
+v350 -- VME Analog/Digital Function Generator                         0x574e
+v360 -- VME Tachometer Module                                         0x5758
+v365 -- VME Tachometer / Overspeed Module                             0x575d
+v370 -- VME Waveform Generator                                        0x5762
+v375 -- VME Waveform Generator                                        0x5767
+v380 -- VME Strain Gauge / Weighing Module                            0x576c
+v385 -- VME Strain Gauge / Load Cell Module                           0x5771
+v410 -- VME RTD / Resistance Input Module                             0x578a
+v420 -- VME Isolated Resistance Simulator                             0x5794
+v450 -- VME Analog Input Module                                       0x57b2
+v460 -- VME Analog Scanner Module                                     0x57bc
+v470 -- VME Analog Output and Thermocouple Simulator Module           0x57c6
+v490 -- VME Multi-range Digitizer                                     0x57da
+v545 -- VME Synchro/Resolver/LVDT/RVDT Simulation/Acquisition Module  0x5811
+.in -5
+.fi
+
+.SS \f4unsigned short v375_read_vxistatus(V375_REGS *\f2pb\f4)\f1
+Returns the value of the VXISTATUS register.
+
+.SS \f4unsigned short v375_read_romid(V375_REGS *\f2pb\f4)\f1
+Returns the value of the ROMID register.
+
+.SS \f4unsigned short v375_read_romrev(V375_REGS *\f2pb\f4)\f1
+Returns the value of the ROMREV register.
+
+.SS \f4unsigned short v375_read_master(V375_REGS *\f2pb\f4)\f1
+Returns the value of the MASTER (master/slave controls) register.
+
+.SS \f4int v375_set_as_master(V375_REGS *\f2pb\f4)\f1
+Defines the current module will be the master module; and will put its four synthesizer frequencies and reset pulses onto the
+external daisy-chain bus.  Only one module on the bus may be the master. 
+
+.SS \f4int v375_unset_as_master(V375_REGS *\f2pb\f4)\f1
+Unset the current module as master.
+
+.SS \f4unsigned short v375_read_resets(V375_REGS *\f2pb\f4)\f1
+Returns the value of the RESETS register.
+
+.SS \f4int v375_write_resets(V375_REGS *\f2pb\f4, unsigned short \f2chnl_mask\f4)\f1
+Write \f2chnl_mask\f1 into the RESETS register.  Bits 0-3 correlate with channels 0-3.  Any bit that is set will hold the output
+in a reset condition.
+
+.SS \f4unsigned short v375_read_strobe(V375_REGS *\f2pb\f4)\f1
+Returns the value of the STROBE register.
+
+.SS \f4int v375_write_strobe(V375_REGS *\f2pb\f4, unsigned short \f2chnl_mask\f4)\f1
+When a new 32-bit integer is loaded to specify a new DDS clock frequency, the user must load the 32-bit frequency control value
+as two 16-bit words.  The actual 32-bit frequency value is not installed until the appropriate STROBE bit is written. Bits 0-3
+correlate to channels 0-3.  The the appropriate bit is set in the STROBE register, the most recent frequency written into the
+vDDS registers will be output.
+
+.SS \f4unsigned short v375_read_vrun(V375_REGS *\f2pb\f4)\f1
+Returns the value of the macro command execution timer register VRUN.
+
+.SS \f4unsigned int v375_read_tpass(V375_REGS *\f2pb\f4)\f1
+Returns the 32-bit TPASS diagnostic pass counter.
+
+.SS \f4unsigned int v375_read_terror(V375_REGS *\f2pb\f4)\f1
+Returns the 32-bit TERROR diagnostic error counter.
+
+.SS \f4unsigned short v375_read_tstop(V375_REGS *\f2pb\f4)\f1
+Returns the 32-bit TSTOP diagnostic control words.
+
+.SS \f4int v375_clear_wavetable_memory(V375_REGS *\f2pb\f4, int \f2chnl\f4)\f1
+Clears the channels wavetable memory (64K).
+
+.SS \f4int v375_load_wavetable_to_memory(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blksize\f4, int \f2blknum\f4, short *\f2pdata\f4)\f1
+Copies a wavetable in local memory into a channels wavetable memory starting at \f2blknum\f1 for \f2blksize\f1 words.
+\f2pdata\f1 points to the wavetable in local memory.
+
+.SS \f4int v375_read_wavetable_from_memory(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blksize\f4, int \f2blknum\f4, short *\f2pdata\f4)\f1
+Copies the contents of the channels wavetable memory at \f2blknum\f1 for \f2blksize\f1 words to local memory pointed to by \f2pdata\f1.
+
+.SS \f4int v375_load_waveform_start_location(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blksize\f4, int \f2blknum\f4)\f1
+When multiple waveforms are loaded into multiple blocks, this call sets the channel pointer to start with a specified \f2blknum\f1.
+
+.SS \f4int v375_read_reg(V375_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned short *\f2reg_value\f4)\f1
+Generic call to read a board register.  \f2offset\f1 is a byte offset, and must be two byte aligned.
+
+.SS \f4int v375_read_interlock_reg(V375_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned int *\f2reg_value\f4)\f1
+Call to read with interlock a 32-bit register.  \f2offset\f1 is a byte offset, and must be four byte aligned.
+
+.SS \f4int v375_write_interlock_reg(V375_REGS *\f2pb\f4, unsigned short \f2offset\f4, unsigned int \f2reg_value\f4)\f1
+Call to write with interlock a 32-bit register.  \f2offset\f1 is a byte offset, and must be four byte aligned.
+
+.SH MACRO EXECUTION
+.SS \f4int v375_execute_macro(V375_REGS *\f2pb\f4, unsigned short \f2macro\f4, unsigned short *\f2params\f4, int \f2num_params\f4, int *\f2arg\f4)\f1
+Returns 0 on success, -1 on failure.  Execute one of the following macros:
+
+.RS
+.IP \f2V375_MACRO_BUILD_FOURIER_SERIES\f1
+use built-in capability to build a multi-harmonic fourier waveform, called by \f4v375_build_fourier_series\f1[\f4_vargs\f1]\f4()\f1
+.IP \f2V375_MACRO_BUILD_GEAR_WAVEFORM\f1
+use built-in capability to build a gear waveform with one or more short teeth, called by \f4v375_build_gear_waveform\f1[\f4_vargs\f1]\f4()\f1
+.IP \f2V375_MACRO_BUILD_PULSE_TRAIN\f1
+use built-in capability to build a pulse train waveform, called by \f4v375_build_pulse_train\f1[\f4_vargs\f1]\f4()\f1
+.IP \f2V375_MACRO_LOAD_CONSTANT\f1
+use built-in capability to build a constant value waveform, called by \f4v375_load_constant()\f1
+.IP \f2V375_MACRO_REINITIALIZE\f1
+re-initialize the board
+.IP \f2V375_MACRO_TEST_VME_DUAL_PORT_MEM\f1
+test dual port memory;  params[0] = first word [0-249], params[1] = last word [1-250]
+.IP \f2V375_MACRO_TEST_WAVEFORM_MEM\f1
+test waveform memory; params[0] = chnl [0-3], params[1] = first word [0-65534], params[2] = last word [1-65535] 
+.IP \f2V375_MACRO_TEST_WATCHDOG_TIMER\f1
+basically a watchdog reset
+.IP \f2V375_MACRO_TEST_CPU_STATIC_RAM\f1
+write results in two integers pointed to by \f2arg\f1.
+.RE
+
+.SH CONFIGURATION
+.SS \f4int v375_set_wavetable_size(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2size\f4)\f1
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4int \f2size\f1
+.br
+Sets the size of the wavetables to \f2size\f1 for channel \f2chnl\f1.  Valid wavetable sizes are 64, 128, 256, 512, 1024, 2048,
+4096, 8192, 16385, 32768, and 65536.
+
+.SS \f4int v375_get_wavetable_size_and_blocks(V375_REGS *\f2pb\f4, int \f2chnl\f4, int *\f2blksize\f4, int *\f2numblks\f4)\f1
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4int *\f2blksize\f1
+.br
+points to the integer to receive the blocksize for the channel.  If \f2blksize\f1 is 0, then nothing will be loaded.
+.TP
+\f4int *\f2numblks\f1
+points to the integer to receive the number of blocks for the channel.  If \f2numblks\f1 is 0, then nothing will be loaded.
+
+.SS \f4int v375_set_lowpass_filter(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2filter\f4)\f1
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4int \f2filter\f1
+.br
+Sets the lowpass filter for channel output.  Valid filter settings are:
+
+.nf
+.in +5
+\f2V375_LOW_PASS_FILTER_3K      \f10
+\f2V375_LOW_PASS_FILTER_6K      \f11
+\f2V375_LOW_PASS_FILTER_15K     \f12
+\f2V375_LOW_PASS_FILTER_30K     \f13
+\f2V375_LOW_PASS_FILTER_60K     \f14
+\f2V375_LOW_PASS_FILTER_150K    \f15
+\f2V375_LOW_PASS_FILTER_300K    \f16
+\f2V375_LOW_PASS_FILTER_OFF     \f17
+.in -5
+.fi
+
+.SS \f4int v375_set_frequency(V375_REGS *\f2pb\f4, int \f2chnl\f4, float \f2freq\f4, int \f2strobe_flag\f4)\f1
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4float \f2freq\f1
+.br
+set the frequency of the output channel.  Note: maximum output frequency is a function of the wavetable size (see: MAX OUTPUT
+FREQUENCY section above).
+.TP
+\f4int \f2strobe_flag\f1
+.br
+.RS
+.IP \f21\f1
+immediate update output to new frequency.
+.IP \f20\f1
+load new frequency but do not update output
+.RE
+
+.SS \f4int v375_set_clock_source(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2clock_source\f4)\f1
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4int \f2clock_source\f1
+.br
+specifies the DDS 0-3 for \f2chnl\f1.  By default, the \f2clock_source\f1 (DDS) matches the channel number.  When the board is
+defined as a MASTER, then DDS 0-3 maps to 4-7, which will put all four outputs onto the external daisy-chained bus.
+
+.SS \f4int v375_set_chnl_divisor(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2divisor\f4)\f1
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4int \f2divisor\f1
+.br
+divides the clock source by an integer in the range of 1-256.  The channel must be in reset mode prior to making this call.  The
+main purpose of this is when two or more channels are connected to the same clock source, and the waveforms are used to simulate
+gear-ratio coupling.
+
+.SS \f4int v375_set_chnl_multiplier(V375_REGS *\f2pb\f4, int \f2chnl\f4, float \f2multiplier\f4)\f1
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4float \f2multiplier\f1
+.br
+sets a signal output multiplier value, whose range is -1.0 to +1.0.  By default, the outputs would range +/-10v (20vpp).  A
+\f2multiplier\f1 value of 0.5 wuold change the outputs to +/-5v (10vpp).
+
+.SS \f4int v375_set_chnl_dc_offset(V375_REGS *\f2pb\f4, int \f2chnl\f4, float \f2dc_offset\f4)\f1
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4float \f2dc_offset\f1
+.br
+provides a DC offset of the output signal.
+
+.SS \f4int v375_set_chnl_phase(V375_REGS *\f2pb\f4, int \f2chnl\f4, float \f2deg_phase\f4)\f1
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4float \f2deg_phase\f1
+.br
+provides a phase shift of the output signal.
+
+.SS \f4int v375_set_chnl_summing_mask(V375_REGS *\f2pb\f4, int \f2chnl\f4, unsigned short \f2summing_mask\f4)\f1
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4unsigned short \f2summing_mask\f1
+.br
+used for analog summing of two or more channels.  If \f2chnl\f1 = 1, and the \f2summing_mask\f1 = 0x3, then the output of
+channel 1 will be the analog sum of channel 0 and 1.  This also implies channels 0 and 1 use the same clock source (DDS).
+
+.SS \f4int v375_set_new_active_block(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2active_block\f4)\f1
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4int \f2active_block\f1
+.br
+provides a method for seamless (at top dead center) transition between waveforms stored in different channel memory blocks.
+
+.SH BUILT-IN WAVEFORM CAPABILITIES
+.SS \f4int v375_build_fourier_series_varg(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2numargs\f4, \f2...\f4)\f1
+.SS \f4int v375_build_fourier_series(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2numargs\f4, float *\f2arglist\f4)\f1
+creates a N harmonic fourier series waveform using built-in capability.  The maximum value for N is 50.
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4int \f2blknum\f1
+.br
+channel block number for the generated waveform to be stored.
+.TP
+\f4int \f2numargs\f1
+.br
+number of arguments in "vargs" or pointed to by \f2arglist\f1.
+.TP
+\f2...\f1
+.PD 0
+.br
+.TP
+\f4float *\f2arglist\f1
+.PD
+.br
+harmonic pairs of data (starting at 0th harmonic).
+
+.PP
+Example using a variable argument list:
+.nf
+.in +5
+//                                             num_args
+//                                                | 
+//                                                |     0th       1st       2nd       3nd       4nd        5nd   
+//                                                |   harmonic  harmonic  harmonic  harmonic  harmonic   harmonic
+//                                                |   DC offset fundmntl                                        
+//                                                |   amp  pha  amp  pha  amp  pha  amp  pha  amp  pha  amp    pha
+//                                                V   /------\\  /------\\  /------\\  /------\\  /------\\  /--------\\ .
+v375_build_fourier_series_vargs(pb, chnl, blknum, 12, 0.0, 0.0, 0.6, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.120, 0.0);
+.in -5
+.fi
+
+Example using an array of arguments:
+
+.nf
+.in +5
+float args[] = {0.0, 0.0, 0.6, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.120, 0.0};
+
+numargs = sizeof(args) / sizeof(float);
+v375_build_fourier_series_vargs(pb, chnl, blknum, numargs, args);
+.in -5
+.fi
+
+.SS \f4int v375_build_gear_waveform_varg(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2num_teeth\f4, float \f2dc_baseline\f4, float \f2dc_top\f4, float \f2pulse_width\f4, int \f2numargs\f4, \f2...\f4)\f1
+.SS \f4int v375_build_gear_waveform(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2num_teeth\f4, float \f2dc_baseline\f4, float \f2dc_top\f4, float \f2pulse_width\f4, int \f2numargs\f4, float *\f2arglist\f4)\f1
+This command loads the selected waveform block with a waveshape typical of the output of a magnetic pickup sensing a rotating
+gear. The gear may have any number of teeth, from 1 to 512, and up to 16 teeth may be defined as 'short' teeth, exceptions
+having a pulse level different from the default value. 
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4int \f2blknum\f1
+.br
+channel block number for the generated waveform to be stored.
+.TP
+\f4int \f2num_teeth\f1
+.br
+number of teeth on the gear.
+.TP
+\f4float \f2dc_baseline\f1
+.br
+bottom of tooth voltage.
+.TP
+\f4float \f2dc_top\f1
+.br
+top of tooth voltage.
+.TP
+\f4float \f2pulse_width\f1
+.br
+width in degrees of tooth.
+.TP
+\f4int \f2numargs\f1
+.br
+number of arguments in "vargs" or pointed to by \f2arglist\f1.
+.TP
+\f2...\f1
+.PD 0
+.br
+.TP
+\f4float *\f2arglist\f1
+.PD
+.br
+pairs of data: short pulse tooth number, short pulse level.
+
+.PP
+Example using a variable argument list:
+
+.nf
+.in +5
+//                                                                                         num_args
+//                                                                                            |  
+//                                                                                            |  1st tooth 2nd tooth
+//                                                                                            |  th#  amp  th#  amp
+//                                                                                            V  /------\\  /------\\ .
+v375_build_gear_waveform_vargs(pb, chnl, blknum, num_teeth, dc_baseline, dc_top, pulse_width, 4, 1.0, 5.0, 2.0, 7.5);
+.in -5
+.fi
+
+Example using an array of arguments:
+
+.nf
+.in +5
+float args[] = {1.0, 5.0, 2.0, 7.5};
+
+numargs = sizeof(args) / sizeof(float);
+v375_build_gear_waveform_vargs(pb, chnl, blknum, num_teeth, dc_baseline, dc_top, pulse_width, numargs, args);
+.in -5
+.fi
+
+.SS \f4int v375_build_pulse_train_vargs(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2num_pulses\f4, float \f2dc_baseline\f4, int \f2numargs\f4, \f2...\f4)\f1
+.SS \f4int v375_build_pulse_train(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, int \f2num_pulses\f4, float \f2dc_baseline\f4, int \f2numargs\f4, float *\f2arglist\f4)\f1
+This command allows creation of an arbitrary pulse train of up to 35 pulses.
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4int \f2blknum\f1
+.br
+channel block number for the generated waveform to be stored.
+.TP
+\f4int \f2num_pulses\f1
+.br
+number of pulses.
+.TP
+\f4float \f2dc_baseline\f1
+.br
+bottom of pulse voltage.
+.TP
+\f4int \f2numargs\f1
+.br
+number of arguments in "vargs" or pointed to by \f2arglist\f1.
+.TP
+\f2...\f1
+.PD 0
+.br
+.TP
+\f4float *\f2arglist\f1
+.PD
+.br
+triplets of data: pulse level, pulse position in degrees, pulse width.
+
+.PP
+Example using a variable argument list. Four pulses, every 90 degrees, 10.0 degrees in width, with increasing voltage 5.0v,
+6.0v, 7.0v, and 8.0v.
+
+.nf
+.in +5
+//                                                                   num_args
+//                                                                      |  
+//                                                                      |    1st pulse        2nd pulse        3rd pulse         4th pulse    
+//                                                                      |   amp  loc  wid    amp  loc  wid    amp  loc  wid     amp  loc  wid 
+//                                                                      V  /-------------\\  /-------------\\  /--------------\\  /--------------\\ .
+v375_build_pulse_train_vargs(pb, chnl, blknum, num_pulses, dc_baseline, 12, 5.0, 0.0, 10.0, 6.0, 90.0, 10.0, 7.0, 180.0, 10.0, 8.0, 270.0, 10.0);
+.in -5
+.fi
+
+Example using an array of arguments:
+
+.nf
+.in +5
+float args[] = {5.0, 0.0, 10.0, 6.0, 90.0, 10.0, 7.0, 180.0, 10.0, 8.0, 270.0, 10.0};
+
+numargs = sizeof(args) / sizeof(float);
+v375_build_pulse_train_vargs(pb, chnl, blknum, num_teeth, dc_baseline, numargs, args);
+.in -5
+.fi
+
+.SS \f4int v375_load_constant(V375_REGS *\f2pb\f4, int \f2chnl\f4, int \f2blknum\f4, float \f2dc\f4)\f1
+load a constant value into a wavetable block.
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4int \f2blknum\f1
+.br
+channel block number for the constant value to be loaded.
+.TP
+\f4float \f2dc\f1
+.br
+is the constant DC value to be loaded into the wavetable block.
+
+.SH ALL IN ONE CALL
+.SS \f4int v375_config_chnl_wavefile(V375_REGS *\f2pb\f4, int \f2chnl\f4, char *\f2wavefilename\f4, int \f2dds\f4, int \f2summing_mask\f4, int \f2low_pass_filter\f4, float *\f2freq_param\f4, float *\f2multiplier_param\f4, float *\f2phase_shift_param\f4, float *\f2dc_offset_param\f4, int *\f2divisor_param\f4, int *\f2active_block_param\f4)\f1
+is a "all in one" call that loads a wavefile into a channels wavetable memory.
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4char *\f2wavefilename\f1
+.br
+is the wave filename that contains the data to load into the channels wavetable memory.
+.TP
+\f4int \f2dds\f1
+.br
+specifies the channel's clock source.  By default the DDS number matches the channel number.  Providing a -1 to this argument,
+selects the default value.
+.TP
+\f4int \f2summing_mask\f1
+.br
+specifies the channel's summing mask.  By default, the summing_mask should be \f21 << chnl\f1.  Providing a -1 to this argument,
+selects the default value.
+.TP
+\f4int \f2low_pass_filter\f1
+.br
+specifies the channel's low pass filter.  By default, the low pass filter is 300k.  Providing a -1 to this argument, selects the
+default value.  The following defines are in \f2vme_interface_library/lib/v375_utils/v375_regs_sdef.h\f1.
+.nf
+.in +5
+#define V375_LOW_PASS_FILTER_3K         0
+#define V375_LOW_PASS_FILTER_6K         1
+#define V375_LOW_PASS_FILTER_15K        2
+#define V375_LOW_PASS_FILTER_30K        3
+#define V375_LOW_PASS_FILTER_60K        4
+#define V375_LOW_PASS_FILTER_150K       5
+#define V375_LOW_PASS_FILTER_300K       6
+#define V375_LOW_PASS_FILTER_OFF        7
+.in -5
+.fi
+.TP
+\f4float *\f2freq_param\f1
+.br
+specifies a pointer to the frequency parameter to setup the initial waveform frequency output.
+.TP
+\f4float *\f2multiplier_param\f1
+.br
+specifies a pointer to the output multiplier value, whose range is -1.0 to +1.0.  By default, the outputs would range +/-10v
+(20vpp).  A \f2multiplier\f1 value of 0.5 wuold change the outputs to +/-5v (10vpp).
+.TP
+\f4float *\f2phase_shift_param\f1
+.br
+specifies a pointer to the phase shift parameter, for the initial phase shift output.
+.TP
+\f4float *\f2dc_offset_parameter\f1
+.br
+specifies a pointer to the DC offset parameter, for the initial DC offset output.
+.TP
+\f4int *\f2divisor_param\f1
+.br
+specifies a point to the divisor parameter.  This is often used when two or more channels use the same clock source (DDS) for
+gear ratio simulation.
+.TP
+\f4int *\f2active_block_param\f1
+.br
+specifies the active block parameter, for the initial output.  This can be changed on the fly with a call to \f2v375_set_new_active_block()\f1.
+
+
+.SH LOAD WAVETABLES FROM FILES
+.SS \f4int v375_load_wavetable(V375_REGS *\f2pb\f4, int \f2chnl\f4, char *\f2wavefile\f4, int *\f2pblksize\f4)\f1
+This is an alternate and very flexible method of constructing and loading wavetables.  The wave files specify the waveform type,
+blocksize, and block number, and is then followed by data.  This allows users to:
+.IP \(bu 2
+load "raw" customized wavetables generated through other means -- i.e. captured data at the test facility or simulation data
+.IP \(bu 2
+construct "sine" waveforms
+.IP \(bu 2
+construct "fourier" waveforms up to 50 harmonics
+.IP \(bu 2
+construct "gear" waveforms with up to 16 short tooth 
+.IP \(bu 2
+construct "pulse_train" waveforms with up to 35 pulses
+
+.TP
+\f4V375_REGS *\f2pb\f1
+.br
+virtual address pointer to the V375 board.
+.TP
+\f4int \f2chnl\f1
+.br
+channel number 0-3.
+.TP
+\f4char *\f2wavefile\f1
+.br
+filename of wavefile.
+.TP
+\f4int *\f2pblksize\f1
+.br
+pointer to the integer parameter that receives the blocksize as defined in the wavefile.
+
+
+.SH WAVE FILE EXAMPLES
+.SS raw.txt
+
+This wavefile specifies three square waveform for blocks 0, 1, 2.  The block size is 64 points.  The first waveform is 16 points
+at 9v and 48 points at 0v.  The second waveform is 32 points at 8v and 32 points at 0v.  The third waveform is 48 points at 7v
+and 16 points at 0v.
+
+Data points can be entered individually, or specified as a range with a hyphen.  There can be no spaces between the hyphen for
+starting point and ending point.  
+
+Lines starting with a "#" are treated as comments.  Any line that contains a "#", the contents after the "#" are ignored.
+
+NOTE: there must be a blank line at the end of the data specification.
+
+.nf
+.in +5
+# -*- conf -*-
+# square wave 25% duty cycle, blocksize = 64, blocknum = 0
+\f4wavespec -t \f2raw \f4-bs \f264 \f4-bn \f20\f1
+0-15	9.0
+16-63	0.0
+
+# square wave 50% duty cycle, blocksize = 64, blocknum = 1
+\f4wavespec -t \f2raw \f4-bs \f264 \f4-bn \f21\f1
+0-31	8.0
+32-63	0.0
+
+# square wave 75% duty cycle, blocksize = 64, blocknum = 2
+\f4wavespec -t \f2raw \f4-bs \f264 \f4-bn \f22\f1
+0-47	7.0
+48-63	0.0
+.in -5
+.fi
+
+.SS sine.txt
+
+This wave specifies three 256 point sinewaves of to be loaded into blocks 0, 1, 2.  Block 1 is phase shifted 45 degrees, and
+block 2 is phase shifted 90 degrees
+
+.nf
+.in +5
+# -*- conf -*-
+# sine wave
+\f4wavespec -t \f2sine \f4-bs \f2256 \f4-bn \f20 \f4-amp \f210.0 \f4-pha \f20.0\f1
+\f4wavespec -t \f2sine \f4-bs \f2256 \f4-bn \f21 \f4-amp \f210.0 \f4-pha \f245.0\f1
+\f4wavespec -t \f2sine \f4-bs \f2256 \f4-bn \f22 \f4-amp \f210.0 \f4-pha \f290.0\f1
+.in -5
+.fi
+
+.SS fourier.txt
+
+This wavefile creates four 256 point waveforms in blocks 0-3.
+
+.nf
+.in +5
+# -*- conf -*-
+# fourier waveform
+\f4wavespec -t \f2fourier \f4-bs \f2256 \f4-bn \f20\f1
+#    amplitude  phase
+0       0.0     0.0     # 0th harmonic (DC term offset) amplitude / phase (unused)
+1       6.0     0.0     # 1st harmonic (fundamental) amplitude / phase 
+
+# fourier wave (rough square wave)
+\f4wavespec -t \f2fourier \f4-bs \f2256 \f4-bn \f21\f1
+#    amplitude  phase
+0       0.0     0.0
+1       6.0     0.0     # fundamental
+2       0.0     0.0
+3       2.0     0.0     # 3rd harmonic = 1/3 fundamental
+4       0.0     0.0
+5       1.25    0.0     # 5th harmonic = 1/5 fundamental
+
+# fourier wave (rough square wave)
+\f4wavespec -t \f2fourier \f4-bs \f2256 \f4-bn \f22\f1
+#    amplitude  phase
+0       0.0     0.0
+1       6.0     0.0     # fundamental
+2       0.0     0.0
+3       2.0     0.0     # 3rd harmonic = 1/3 fundamental
+4       0.0     0.0
+5       1.2     0.0     # 5th harmonic = 1/5 fundamental
+6       0.0     0.0
+7       0.8571  0.0     # 7th harmonic = 1/7 fundamental
+
+# fourier wave (rough square wave)
+\f4wavespec -t \f2fourier \f4-bs \f2256 \f4-bn \f23\f1
+#    amplitude  phase
+0       0.0     0.0
+1       6.0     0.0     # fundamental
+2       0.0     0.0
+3       2.0     0.0     # 3rd harmonic = 1/3 fundamental
+4       0.0     0.0
+5       1.2     0.0     # 5th harmonic = 1/5 fundamental
+6       0.0     0.0
+7       0.8571  0.0     # 7th harmonic = 1/7 fundamental
+8       0.0     0.0
+9       0.6667  0.0     # 9th harmonic = 1/9 fundamental
+.in -5
+.fi
+
+.SS gear.txt
+
+This wavefile creates a 1024 point gear simulation with 12 teeth, with a tooth bottom value of 0v, and a tooth height of 10v.
+There are three short teeth that have a 2.5v, 5.0v, and 7.5v.
+
+.nf
+.in +5
+# -*- conf -*-
+\f4wavespec -t \f2gear \f4-bs \f21024 \f4-bn \f20 \f4-nt \f212 \f4-pb \f20.0 \f4-ph \f210.0\f1
+#	amplitude	short_tooth_number
+0	2.5		0
+1	5.0		4
+2	7.5		8
+.in -5
+.fi
+
+.SS pulse.txt
+
+This wavefile creates a 1024 point pulse train waveform, pulse bottom of 0v, and four pulses.
+
+.nf
+.in +5
+# -*- conf -*-
+\f4wavespec -t \f2pulse_train \f4-bs \f21024 \f4-bn \f20 \f4-pb \f20.0\f1
+# entry  amplitude(+/-10.0)  phase(0-360)  width(0-360)
+      0          2.5              0           5
+      1          5.0             90          10
+      2          7.5            180          15
+      3         10.0            270          20
+.in -5
+.fi
+
+.SH VENDOR MANUAL
+The manuals are available at http://www.highlandtechnology.com/downloads/manuals.shtml.  You will need to register and login to
+download the manual pdf.
+
+.SH SEE ALSO
+\f4v120_config(1)\f1, \f2vme_interface_library/lib/v375_utils/v375_regs_sdef.h\f1, \f2vme_interface_library/user/v375/v375.c\f1
+
+.SH CAVEATS
+none
+
+.SH AUTHOR
+Dean W. Anneser

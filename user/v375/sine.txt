@@ -1,0 +1,5 @@
+# -*- conf -*-
+# sine wave
+wavespec -t sine -bs 256 -bn 0 -amp 10.0 -pha 0.0
+wavespec -t sine -bs 256 -bn 1 -amp 10.0 -pha 45.0
+wavespec -t sine -bs 256 -bn 2 -amp 10.0 -pha 90.0

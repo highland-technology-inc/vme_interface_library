@@ -18,3 +18,8 @@
 // Date: Sat Aug 07 17:24:12 2021
 
 extern int count_char_in_string(char *, char);
+extern int string_contains_matched_brackets(char *);
+extern int return_string_in_brackets(char *, char *);
+extern int return_integer_in_brackets(char *, int *);
+extern void remove_leading_whitespace(char *);
+extern int is_a_comment(char *);

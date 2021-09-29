@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<style type="text/css">
+td, th { border: 1px solid #c3c3c3; padding: 0 3px 0 3px; }
+table { border-collapse: collapse; }
+img { max-width: 100%; }
+</style>
+<meta name="generator" content="ReText 7.2.1">
+<title>OVERVIEW</title>
+<style type="text/css">
+</style>
+</head>
+<body>
+<h1>VME Interface Library Overview</h1>
+<h2>Executive Summary</h2>
+<p>The Highland Technology <code>vme_interface_library</code> library, in combination with the <code>v120_driver</code> and <code>v120_clt</code> products, provides for a complete framework for Linux based PCs to access VME boards on one or more VME chassis, via the Highland Technology PCIe to VME bridge <a href="URL">http://www.highlandtechnology.com/DSS/V120DS.shtml</a> .  </p>
+<p>This framework provides for a very easy method to:</p>
+<ol>
+<li>map to and directly access through programmed I/O the registers on the boards -- without requiring root access or the need for a kernel driver for each board type</li>
+<li>user code callable library functions that address most all capabilities of the boards</li>
+<li>provide extensive user code examples demonstrating the use of these callable library functions</li>
+<li>peruse extensive manpages for interface library function calls for each board type</li>
+</ol>
+<p>All three of these products can be easily downloaded from <a href="URL">https://github.com/highland-technology-inc</a> .</p>
+<p>Presently the VME interface library has support for:</p>
+<ol>
+<li>V375 Arbitrary Waveform Generator module</li>
+<li>V450 Analog Input and Thermocouple Measurement module</li>
+<li>V470 Analog Output and Thermocouple Simulator module</li>
+<li>V545 Synchro/Resolver/LVDT/RVDT Simulation/Acquisition module</li>
+</ol>
+<p>Support for additional boards will be provided upon request.</p>
+<p>For more details, see the README.</p>
+
+</body>
+</html>

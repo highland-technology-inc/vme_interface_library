@@ -1,0 +1,8 @@
+# -*- conf -*-
+# wavespec -t pulse_train -bs blocksize -bn blocknumber -pb pulse_base_volts
+wavespec -t pulse_train -bs 1024 -bn 0 -pb 0.0
+# entry  amplitude(+/-10.0)  phase(0-360)  width(0-360)
+      0          2.5              0           5
+      1          5.0             90          10
+      2          7.5            180          15
+      3         10.0            270          20

@@ -23,6 +23,7 @@
 \f4v545_utils\f1 - V545 device interface library
 
 .SH SYNOPSIS
+.SS INCLUDE FILES
 \f4#include \f2"ht_utils_proto.h"\f1
 .br
 \f4#include \f2"misc_math_utils_proto.h"\f1
@@ -146,7 +147,6 @@
 \f4int v545_get_fb_type(V545_REGS *\f2pb\f4, int \f2fb_chnl\f4)\f1
 
 .SH DESCRIPTION
-
 The \f4v545_utils\f1 library is a comprehensive interface to the Highland Technology V545 LVDT/RVDT/Synchro/Resolver interface.
 The V545 can simulate or measure any of these devices with either internal or external excitation.  It has 24 transformer
 isolated AC simewave generator/acquisition channels.  Multiple channels can share an excitation channel.  There are 12 function
@@ -1259,9 +1259,8 @@ For the specified \f2fb_chnl\f1, return the function code.
 The manuals are available at http://www.highlandtechnology.com/downloads/manuals.shtml.  You will need to register and login to
 download the manual pdf.
 
-
 .SH SEE ALSO
-none
+\f4v120_config(1)\f1, \f2vme_interface_library/lib/v545_utils/v545_regs_sdef.h\f1, \f2vme_interface_library/user/v545/v545.c\f1
 
 .SH CAVEATS
 none

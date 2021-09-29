@@ -13,20 +13,15 @@
 #
 # Author: Dean W. Anneser
 # Company: RTLinux Solutions LLC for Highland Technology, Inc.
-# Date: Thu Sep 02 14:13:18 2021
+# Date: Thu Sep 02 14:13:46 2021
 
-SUBDIRS = $(shell ls -1d * | egrep -v 'header.mk|common.mk|Makefile|\*~')
+include ../header.mk
 
-all:
-	@for i in $(SUBDIRS); do \
-	  make -C $$i all; \
-	done
+INCLUDES += -I ../deg_conv  -I ../ht_utils -I ../misc_math_utils -I ../misc_string_utils -I ../read_line -I ../parse_args -I ../parse_options -I ../is_a_utils 
 
-clean:
-	@for i in $(SUBDIRS); do \
-	  make -C $$i clean; \
-	done
+ALL = $(LIBRARY)
 
-.PHONY: list
-list:
-	@echo "SUBDIRS = $(SUBDIRS)"
+all: $(ALL)
+
+include ../common.mk
+

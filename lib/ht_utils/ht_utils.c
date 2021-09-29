@@ -79,27 +79,24 @@ unsigned int ht_write_interlocked(volatile unsigned short *phi, unsigned int val
  
 // Steps to execute a macro
 // 1) Verify that the MS bit (bit 15) of the MACRO register is clear, indicating that the card is ready to accept a command.
-// 2) If required, load param_count param variables into the PARAM0..PARAMx registers.
+// 2) If required, load num_params param variables into the PARAM0..PARAMx registers.
 // 3) Write a 16-bit macro code to MACRO.
 // 4) Wait until the MS bit again clears.  If MACRO is non-zero, an error has occurred.
 
-int ht_write_macro(unsigned short *pmacro, unsigned short macro, unsigned short *param, int param_count, int reset_flag)
+int ht_write_macro(unsigned short *pmacro, unsigned short macro, unsigned short *param, int num_params, int reset_flag)
 {
   int i;
-  unsigned short *param_array = param;
+  unsigned short *p = param;
   
   if ((*pmacro & 0x8000) != 0)
     return(-1);
   
-  if (param_count > 2)
+  if ((num_params > 0) && (param == (unsigned short *)0))
     return(-1);
 
-  if ((param_count > 0) && (param == (unsigned short *)0))
-    return(-1);
-
-  if (param_count > 0)
-    for (i = 0; i <= 2; i++)
-      *(pmacro + 1 + i) = *param_array++;
+  if (num_params > 0)
+    for (i = 0; i < num_params; i++)
+      *(pmacro + 1 + i) = *p++;
 
   *pmacro = macro;
 

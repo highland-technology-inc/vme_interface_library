@@ -17,6 +17,8 @@
 // Company: RTLinux Solutions LLC for Highland Technology, Inc.
 // Date: Sat Aug 07 17:23:11 2021
 
+#include <math.h>
+
 double clamp(double x, double xmin, double xmax)
 {
   if (x > xmax)
@@ -35,3 +37,25 @@ double ratio(double x, double xmin, double xmax, double ymin, double ymax)
   else
     return(((clamp(x, xmin, xmax) - xmin) / (xmax - xmin)) * (ymax - ymin) + ymin);
 }
+
+
+double rotational_range(double deg, double range)
+{
+  double __attribute__((unused)) integral;
+  
+  deg = range * modf((deg / range), &integral);
+  if (deg == -0.0L)
+    deg = 0.0L;
+
+  return(deg);
+}
+
+
+int inrange(double x, double low, double high)
+{
+  if ((x < low) || (x > high))
+    return(-1);
+  return(0);
+}
+
+

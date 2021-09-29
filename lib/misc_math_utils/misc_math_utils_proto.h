@@ -19,4 +19,6 @@
 
 extern double clamp(double, double, double);
 extern double ratio(double, double, double, double, double);
+extern double rotational_range(double, double);
+extern int inrange(double, double, double);
 

@@ -27,11 +27,11 @@
 .fi
 
 .SH SYNOPSIS
-.nf
+.SS INCLUDE FILES
 \f4#include \f2"v450_utils_proto.h"\f1
+.br
 \f4#include \f2"v450_regs_sdef.h"\f1
 .br
-.sp
 
 .SS READ/WRITE REGISTERS
 \f4unsigned short v450_read_vximfr(V450_REGS *\f2pb\f4)\f1
@@ -957,4 +957,15 @@ if (v450_rn_code_to_range(V450_RN_CODE_25_V, &min, &max) == -1)
 .in -5
 .fi
 
+.SH VENDOR MANUAL
+The manuals are available at http://www.highlandtechnology.com/downloads/manuals.shtml.  You will need to register and login to
+download the manual pdf.
 
+.SH SEE ALSO
+\f4v120_config(1)\f1, \f2vme_interface_library/lib/v450_utils/v450_regs_sdef.h\f1, \f2vme_interface_library/user/v450/v450.c\f1
+
+.SH CAVEATS
+none
+
+.SH AUTHOR
+Dean W. Anneser
