@@ -18,6 +18,7 @@
 // Date: Sat Aug 07 17:24:30 2021
 
 #include <ctype.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -133,3 +134,59 @@ int is_a_comment(char *string)
 }
 
 
+int comma_del_string_to_mask(char *string, void *mask, int mask_len_bytes)
+{
+  int num_bits_in_mask = 0;
+  char *pstring;
+  char *p;
+  int bitnum;
+  int rtc = 0;
+
+  switch(mask_len_bytes)
+    {
+    case 1:
+    case 2:
+    case 4:
+    case 8:
+      num_bits_in_mask = 8 * mask_len_bytes;
+      break;
+    default:
+      return(-1);
+    }
+
+  pstring = strdup(string);
+
+  p = strtok(pstring, ",");
+  
+  while (p != (char *)0)
+    {
+      bitnum = atoi(p);
+      if (bitnum >= num_bits_in_mask)
+        {
+          rtc = -1;
+          goto end;
+        }
+
+      switch(mask_len_bytes)
+        {
+        case 1:
+          *(uint8_t *)mask = (uint8_t)(1 << bitnum);
+          break;
+        case 2:
+          *(uint16_t *)mask = (uint16_t)(1 << bitnum);
+          break;
+        case 4:
+          *(uint32_t *)mask = (uint32_t)(1 << bitnum);
+          break;
+        case 8:
+          *(uint64_t *)mask = (uint64_t)(1L << bitnum);
+          break;
+        }
+
+      p = strtok(0, ",");
+    }
+
+ end:
+  free(pstring);
+  return(rtc);
+}

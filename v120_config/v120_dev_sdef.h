@@ -24,6 +24,26 @@
 #include "vme_specs_sdef.h"	// needed for MAX_CARDS_IN_CHASSIS
 #endif
 
+// V120.c (included as a library) defines the V120_HANDLE structure as:
+
+// struct V120_HANDLE {
+//   struct VME_REGION               *list_head;	// linked list of VME cards mapped (not same as mmlist, which takes care of mmap management)
+//   int                             fd_ctrl;		// file descriptor of v120_c(n) device (control region)
+//   int                             fd_vme;		// file descriptor of v120_v(n) device (VME pages)
+//   int                             fd_irq;		// file descriptor of v120_q(n) device (IRQ )
+//   V120_CONFIG                     *config;		// pointer to V120 config regions (PCIe memory)
+//   V120_PD                         *pd;		// pointer to V120 page descriptor registers (PCIe memory)
+//   V120_IRQ                        *irqregs;		// pointer to V120 IRQ registers (PCIe memory)
+//   struct V120_MONITOR_BLOCK       *mon_blk;		// pointer to V120's VME monitor block (PCIe memory)
+//   struct V120_PCIE_RECORD_BLOCK   *record_blk;	// pointer to V120's PCIe record block (PCIe memory)
+//   void                            *mapptr;		// pointer to memory-mapped base of V120's control region
+//   int                             errnum;		// saved value of errno for this device
+//   struct vme_mmlist_t             *mmlist;		// pointer to head of linked list of memory-mapped areas
+//   unsigned long                   flag;		// TODO: meaning of this
+//   unsigned int                    crateno;		// Crate number of V120; set by either v120_next or call to v120_open
+// };
+
+
 // V120.h includes v120_uapi.h that defines V120_CONFIG, and v120 registers
 // V120.h defines V120_PD as uint64_t
 
