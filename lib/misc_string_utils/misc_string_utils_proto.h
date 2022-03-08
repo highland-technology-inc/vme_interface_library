@@ -23,3 +23,4 @@ extern int return_string_in_brackets(char *, char *);
 extern int return_integer_in_brackets(char *, int *);
 extern void remove_leading_whitespace(char *);
 extern int is_a_comment(char *);
+extern int comma_del_string_to_mask(char *, void *, int);

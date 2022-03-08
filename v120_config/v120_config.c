@@ -266,6 +266,8 @@ void print_v120_dev(V120_DEV *dev)
       printf("v120_dev[%d].crate_num = %d\n", dev->crate_num, dev->crate_num);
       printf("v120_dev[%d].online = %d\n\n", dev->crate_num, dev->online);
 
+      printf("&v120_dev[%d].a16 = %p\n", dev->crate_num, &dev->a16);
+      printf("v120_dev[%d].a16.next = %p\n", dev->crate_num, dev->a16.next);
       printf("v120_dev[%d].a16.base = %p\n", dev->crate_num, dev->a16.base);
       printf("v120_dev[%d].a16.start_page = 0x%x\n", dev->crate_num, dev->a16.start_page);
       printf("v120_dev[%d].a16.end_page = 0x%x\n", dev->crate_num, dev->a16.end_page);
@@ -275,6 +277,8 @@ void print_v120_dev(V120_DEV *dev)
       printf("v120_dev[%d].a16.tag = %s\n", dev->crate_num, dev->a16.tag);
       printf("v120_dev[%d].a16.udata = 0x%lx\n\n", dev->crate_num, (unsigned long)dev->a16.udata);
 
+      printf("&v120_dev[%d].a24 = %p\n", dev->crate_num, &dev->a24);
+      printf("v120_dev[%d].a24.next = %p\n", dev->crate_num, dev->a24.next);
       printf("v120_dev[%d].a24.base = %p\n", dev->crate_num, dev->a24.base);
       printf("v120_dev[%d].a24.start_page = 0x%x\n", dev->crate_num, dev->a24.start_page);
       printf("v120_dev[%d].a24.end_page = 0x%x\n", dev->crate_num, dev->a24.end_page);
@@ -284,6 +288,8 @@ void print_v120_dev(V120_DEV *dev)
       printf("v120_dev[%d].a24.tag = %s\n", dev->crate_num, dev->a24.tag);
       printf("v120_dev[%d].a24.udata = 0x%lx\n\n", dev->crate_num, (unsigned long)dev->a24.udata);
 
+      printf("&v120_dev[%d].a32 = %p\n", dev->crate_num, &dev->a32);
+      printf("v120_dev[%d].a32.next = %p\n", dev->crate_num, dev->a32.next);
       printf("v120_dev[%d].a32.base = %p\n", dev->crate_num, dev->a32.base);
       printf("v120_dev[%d].a32.start_page = 0x%x\n", dev->crate_num, dev->a32.start_page);
       printf("v120_dev[%d].a32.end_page = 0x%x\n", dev->crate_num, dev->a32.end_page);
@@ -572,7 +578,7 @@ int v120_setup_memory_regions(V120_DEV *v120_dev)
         }
     }
 
-  if ((next_vme_page = v120_allocate_vme(v120_dev->crate_handle, 0)) == -1)
+  if ((next_vme_page = v120_allocate_vme(v120_dev->crate_handle, next_vme_page)) == -1)
     {
 #ifdef DEBUG
       printf("ERROR %s/%s: v120_allocate_vme() error, crate_num = %d; error = %s\n", whoami, __FUNCTION__, v120_dev->crate_num, strerror(errno));

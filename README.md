@@ -68,6 +68,7 @@ input.conf:
     vmedevice v470[0][0] -base 0xffff0800
     vmedevice v450[0][0] -base 0xffff0a00
     vmedevice v375[0][0] -base 0xffff0c00
+    vmedevice v210[0][0] -base 0xff000000
 ```
 Then run v120_config:
 ```
@@ -83,7 +84,7 @@ The contents of /tmp/output.conf are as follows.  The online option (-o) tags v5
     vmedevice v470[0][0] -base 0xffff0800 -a 16 -o true  # VME Analog Output and Thermocouple Simulator Module
     vmedevice v450[0][0] -base 0xffff0a00 -a 16 -o true  # VME Analog Input and Thermocouple Measurement Module
     vmedevice v375[0][0] -base 0xffff0c00 -a 16 -o true  # VME Arbitrary Waveform Generator
-
+    vmedevice v210[0][0] -base 0xff000000 -a 24 -o true	# VME Relay Module
 ```
 ### v120_config auto-scan example:
 
@@ -105,6 +106,7 @@ vmedevice v545[0][0] -base 0xffff0000 -a 16 -o true # VME Synchro/Resolver/LVDT/
 vmedevice v470[0][0] -base 0xffff0800 -a 16 -o true # VME Analog Output and Thermocouple Simulator Module
 vmedevice v450[0][0] -base 0xffff0a00 -a 16 -o true # VME Analog Input and Thermocouple Measurement Module
 vmedevice v375[0][0] -base 0xffff0c00 -a 16 -o true # VME Arbitrary Waveform Generator
+vmedevice v210[0][0] -base 0xff000000 -a 24 -o true # VME Relay Module
 ```
 
 The v120_config(1) manpage explains this all in detail.
@@ -113,13 +115,14 @@ The v120_config(1) manpage explains this all in detail.
 
 ## Interface libraries
 
-For the initial release, there are four interface libraries provided (with many more to come soon).  They are:
+For this release, there are five interface libraries provided (with many more to come soon).  They are:
 
 1. get_vaddr_for_device
 2. v375_utils
 3. v450_utils
 4. v470_utils
 5. v545_utils
+6. v210_utils
 
 Each one of these is designed to provide the user easy access to the board capabilities and registers.
 
@@ -385,6 +388,43 @@ v545_is_a_valid_override_block_chnl()
 v545_override_get_regfile_index()
 v545_get_fb_type()
 ```
+
+### v545 library functions:
+These functions are all described in detail in the v545_utils(3) manpage.
+```
+// read/write registers
+v210_read_bdid()
+v210_read_csr()
+v210_write_csr()
+v210_read_vximfr();
+v210_read_vxitype()
+v210_read_fpgarev()
+
+// LED control
+v210_turn_off_error_led()
+v210_turn_on_error_led()
+
+// connect/disconnect relays to P3/P4 connectors
+v210_connect_relays()
+v210_disconnect_relays()
+
+// set/clear bits in relay mask
+v210_set_bit_in_mask()
+v210_clr_bit_in_mask()
+v210_read_bit_in_mask()
+
+// read/write relay mask to relays
+v210_write_relay_regs()
+v210_read_relay_regs()
+
+// clear all relays
+v210_clr_all_relays()
+
+// read/write relays directly with user 64-bit mask
+v210_set_relays_from_mask64()
+v210_read_relays_into_mask64()
+```
+
 ---
 
 ## Example user code
@@ -395,6 +435,7 @@ The `vme_interface_library/user` directory presently contains four directories:
  2. The `v470` directory contains example code that write to 8 channels as a D/A and another 8 channels as a T/C simulator.
  3. The `v450` directory contains example code that read 8 channels as a A/D and another 8 channels as T/C inputs.
  4. The `v545` directory contains several loopback examples that requires a DB25 cable to connect the P1 and P2 connector.
+ 5. The `v210` directory contains example code that sets and clears relays.
 
 Note: 2 & 3 requires two DB25 cables to loopback the V470 P1 -> V450 P1, and V470 P2 -> V450 P2.
 <p>&nbsp;</p>

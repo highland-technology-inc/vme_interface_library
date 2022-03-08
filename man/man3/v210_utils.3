@@ -1,0 +1,181 @@
+\" -*- nroff -*-
+\" This program is free software; you can redistribute it and/or modify
+\" it under the terms of the GNU General Public License as published by
+\" the Free Software Foundation; either version 2 of the License, or (at
+\" your option) any later version.
+\"
+\" This program is distributed in the hope that it will be useful, but
+\" WITHOUT ANY WARRANTY; without even the implied warranty of
+\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+\" General Public License for more details.
+\"
+\" You should have received a copy of the GNU General Public License
+\" along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+\" Author: Dean W. Anneser
+\" Company: RTLinux Solutions LLC for Highland Technologh, Inc.
+\" Date: Mon Mar 07 14:45:39 2022
+ 
+.TH v210_utils 3 
+
+.SH NAME
+.nf
+\f4v210_utils\f1 -- collection of routines to interface with the VME V210 64 channel relay driver interface.
+.fi
+
+.SH SYNOPSIS
+.SS INCLUDE FILES
+\f4#include \f2<stdint.h>\f1
+
+\f4#include \f2"v210_utils_proto.h"\f1
+.br
+
+.SS READ/WRITE REGISTERS
+\f4unsigned short v210_read_bdid(V210_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v210_read_csr(V210_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v210_write_csr(V210_REGS *\f2pb\f4, unsigned short \f2mask\f4)\f1
+.br
+\f4unsigned short v210_read_vximfr(V210_REGS *\f2pb\f4)\f1
+.br
+\f4unsigned short v210_read_vxitype(V210_REGS *\f2pb\f4)\f1
+.br
+\f4char v210_read_fpgarev(V210_REGS *\f2pb\f4)\f1
+.br
+\f4void v210_turn_off_error_led(V210_REGS *\f2pb\f4)\f1
+.br
+\f4void v210_turn_on_error_led(V210_REGS *\f2pb\f4)\f1
+.br
+\f4void v210_connect_relays(V210_REGS *\f2pb\f4)\f1
+.br
+\f4void v210_disconnect_relays(V210_REGS *\f2pb\f4)\f1
+.br
+\f4int v210_set_bit_in_mask(V210_REGS *\f2pb\f4, int \f2chnl\f4)\f1
+.br
+\f4int v210_clr_bit_in_mask(V210_REGS *\f2pb\f4, int \f2chnl\f4)\f1
+.br
+\f4int v210_read_bit_in_mask(V210_REGS *\f2pb\f4, int \f2chnl\f4)\f1
+.br
+\f4void v210_write_relay_regs(V210_REGS *\f2pb\f4)\f1
+.br
+\f4void v210_read_relay_regs(V210_REGS *\f2pb\f4, int \f2waitflag\f4)\f1
+.br
+\f4void v210_clr_all_relays(V210_REGS *\f2pb\f4)\f1
+.br
+\f4void v210_set_relays_from_mask64(V210_REGS *\f2pb\f4, uint64_t \f2mask\f4)\f1
+.br
+\f4void v210_read_relays_into_mask64(V210_REGS *\f2pb\f4, uint64_t *\f2mask\f4, int \f2waitflag\f4)\f1
+.br
+
+.SH DESCRIPTION
+
+The V210 is a single-wide, 6U VME module that includes 64 SPDT relays and drivers.  User-settable DIP switches set the A16/A24
+VME address mode, VME address, and select whether the relays are statically operated or operate in latching mode.  Users can
+read back actual relay contact states. The V210 is fully compatible with all versions of the VMIVME-2210.
+
+For each relay, the connectors have three pins.  "A" pin is for normally open connection, "B" pin is for normally closed
+connection, and "C" is for common.
+
+The v210_utils interface library maintains a local 64-bit mask that will drive the four 16-bit relay control registers.  The
+operational intent is that users will set/clear bits in this mask (\f4v210_set_bit_in_mask()\f1, \f4v210_clr_bit_in_mask()\f1),
+and then with one write (\f4v210_write_relay_regs()\f1) update the control registers.  With relays, user code can often attempt
+to drive relays faster than they can respond.  Updating the state mask, and then making one write to the control registers is a
+much more efficient method to drive the relays.
+
+
+.SH DEVICE INTERFACE CALL ARGUMENTS
+.TP
+\f2pb\f1
+.br
+virtual address pointer to the base address of the board. See \f4get_vaddr_for_device(3)\f1.
+.TP
+\f2chnl\f1
+.br
+board channel number 0-63.
+.TP
+\f2mask\f1
+.br
+is a 64-bit unsigned long.  Each bit correlates to a channel (or relay).
+.TP
+\f2waitflag\f1
+.br
+causes a 10 msec delay prior to reading the state of the relays.  This ensures any output changes to the relays prior, will be 
+accurately reflected in the read-state of the relays.  
+
+.SH REGISTER ACCESS EXAMPLES
+.SS \f4unsigned short v210_read_bdid(V210_REGS *\f2pb\f4)\f1
+Returns the value of the BDID register -- 6912 (0x1b00).
+
+.SS \f4unsigned short v210_read_csr(V210_REGS *\f2pb\f4)\f1
+Returns the value of the CSR register.
+
+.SS \f4unsigned short v210_read_vximfr(V210_REGS *\f2pb\f4)\f1
+Returns the value of the VXIMFR register -- 65262 (0xfeee).
+
+.SS \f4unsigned short v210_read_vxitype(V210_REGS *\f2pb\f4)\f1
+Returns the value of the VXITYPE register -- 22210 (0x56c2).
+
+.SS \f4char v210_read fpgarev(V210_REGS *\f2pb\f4)\f1
+Returns the firmware version character -- initially "A".
+
+.SS \f4void v210_turn_off_error_led(V210_REGS *\f2pb\f4)\f1
+As this board was designed to be a designed to be a VMIC 2210 replacement, VMIC had a "feature" in their interfaces that when
+powered up, the "FAIL" LED is on by default.  Only writing a 1 to the FAIL LED bit in the CSR will turn it off.
+
+.SS \f4void v210_turn_on_error_led(V210_REGS *\f2pb\f4)\f1
+As this board was designed to be a designed to be a VMIC 2210 replacement, VMIC had a "feature" in their interfaces that when
+powered up, the "FAIL" LED is on by default.  Writing a 0 to the FAIL LED bit in the CSR will turn it on (simulated power up
+condition).
+
+.SS \f4void v210_connect_relays(V210_REGS *\f2pb\f4)\f1
+Connects the relays to the P3/P4 connectors -- power up state is disconnected.
+
+.SS \f4void v210_disconnect_relays(V210_REGS *\f2pb\f4)\f1
+Disconnects the relays to the P3/P4 connectors -- power up state is disconnected.
+
+.SS \f4int v210_set_bit_in_mask(V210_REGS *\f2pb\f4, int \f2chnl\f4)\f1
+Sets the \f2chnl\f1 bit in the local 64-bit mask.  This mask is contained in the v210 interface library).  Returns 0 for no
+error, or -1 for error (\f2chnl\f1 out of range).
+
+.SS \f4int v210_clr_bit_in_mask(V210_REGS *\f2pb\f4, int \f2chnl\f4)\f1
+Clears the \f2chnl\f1 bit in the local 64-bit mask.  This mask is contained in the v210 interface library).  Returns 0 for no
+error, or -1 for error (\f2chnl\f1 out of range).
+
+.SS \f4int v210_read_bit_in_mask(V210_REGS *\f2pb\f4, int \f2chnl\f4)\f1
+Clears the \f2chnl\f1 bit in the local 64-bit mask.  This mask is contained in the v210 interface library).  Returns 0 for no
+error, or -1 for error (\f2chnl\f1 out of range).
+
+.SS \f4void v210_write_relay_regs(V210_REGS *\f2pb\f4)\f1
+Writes the local 64-bit mask to the four 16-bit control registers that drives the state of the 64 relays.
+
+.SS \f4void v210_read_relay_regs(V210_REGS *\f2pb\f4, int \f2waitflag\f4)\f1
+Reads the state of the relay registers and load that into the local 64-bit mask.  If \f2waitflag\f1 is equal to 1, a 10\ msec
+wait will occur prior to the read.  This ensures any previous writes to the relays have had time to settle out so the read
+provides an accurate state.  If the reads are done first in a control loop, and the control loop is at least 10\ msec, then the
+\f2waitflag\f1 would not be needed.  Adding 10\ msec to the acquisition time should be avoided.
+
+.SS \f4void v210_clr_all_relays(V210_REGS *\f2pb\f4)\f1
+Sets all relays to the power up state.
+
+.SS \f4void v210_set_relays_from_mask64(V210_REGS *\f2pb\f4, uint64_t \f2mask\f4)\f1
+Sets all the relays based on the 64-bit value in \f2mask\f1.
+
+.SS \f4unsigned int v210_read_relays_into_mask64(V210_REGS *\f2pb\f4, uint64_t *\f2mask\f4, int \f2waitflag\f4)\f1
+Reads the state of all the relays and load it into the 64-bit \f2mask\f1.
+
+.SH EXAMPLES
+see \f2vme_interface_library/user/v210/v210.c\f1
+
+.SH VENDOR MANUAL
+The manuals are available at http://www.highlandtechnology.com/downloads/manuals.shtml.  You will need to register and login to
+download the manual pdf.
+
+.SH SEE ALSO
+\f4v120_config(1)\f1, \f2vme_interface_library/lib/v210_utils/v210_regs_sdef.h\f1, \f2vme_interface_library/user/v210/v210.c\f1
+
+.SH CAVEATS
+none
+
+.SH AUTHOR
+Dean W. Anneser
